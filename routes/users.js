@@ -1,32 +1,50 @@
-const express = require("express");
+const express = require('express');
 const router = express.Router();
-const pool = require("../config/db");
+const userController = require('../controllers/userController');
+const { authenticateToken, authorize, authorizeOwnerOrAdmin } = require('../middleware/auth');
+const { 
+  validateUserCreation, 
+  validateUserUpdate, 
+  validateLogin, 
+  validateUserId, 
+  validatePagination 
+} = require('../middleware/validation');
+const { asyncHandler } = require('../middleware/errorHandler');
 
-// Criar usuário
-router.post("/", async (req, res, next) => {
-  try {
-    const { name, email } = req.body;
-    if (!name || !email) {
-      return res.status(400).json({ error: "Nome e email são obrigatórios" });
-    }
+// Rotas públicas
+router.post('/register', validateUserCreation, asyncHandler(userController.createUser));
+router.post('/login', validateLogin, asyncHandler(userController.login));
 
-    const sql = "INSERT INTO users (name, email) VALUES (?, ?)";
-    const [result] = await pool.query(sql, [name, email]);
+// Rotas protegidas
+router.use(authenticateToken); // Todas as rotas abaixo requerem autenticação
 
-    res.status(201).json({ id: result.insertId, name, email });
-  } catch (err) {
-    next(err);
-  }
-});
+// Listar usuários (apenas admin)
+router.get('/', 
+  authorize('admin'), 
+  validatePagination, 
+  asyncHandler(userController.getUsers)
+);
 
-// Listar usuários
-router.get("/", async (req, res, next) => {
-  try {
-    const [rows] = await pool.query("SELECT id, name, email FROM users");
-    res.json(rows);
-  } catch (err) {
-    next(err);
-  }
-});
+// Buscar usuário por ID (próprio usuário ou admin)
+router.get('/:id', 
+  validateUserId, 
+  authorizeOwnerOrAdmin, 
+  asyncHandler(userController.getUserById)
+);
+
+// Atualizar usuário (próprio usuário ou admin)
+router.put('/:id', 
+  validateUserId, 
+  validateUserUpdate, 
+  authorizeOwnerOrAdmin, 
+  asyncHandler(userController.updateUser)
+);
+
+// Deletar usuário (apenas admin)
+router.delete('/:id', 
+  authorize('admin'), 
+  validateUserId, 
+  asyncHandler(userController.deleteUser)
+);
 
 module.exports = router;
