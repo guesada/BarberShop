@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Elite Barber - Aplicativo Premium</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <!-- Tela de Seleção Inicial -->
+    <div id="user-selection" class="screen active">
+        <div class="hero-container">
+            <div class="hero-header">
+                <i class="fas fa-cut hero-icon"></i>
+                <h1 class="hero-title">Elite Barber</h1>
+                <p class="hero-subtitle">Experiência premium em barbearia</p>
+            </div>
+            <div class="selection-cards">
+                <div class="user-card" onclick="selectUserType('cliente')">
+                    <i class="fas fa-user"></i>
+                    <h3>Cliente</h3>
+                    <p>Agende seus cortes e cuide do seu visual</p>
+                </div>
+                <div class="user-card" onclick="selectUserType('barbeiro')">
+                    <i class="fas fa-scissors"></i>
+                    <h3>Barbeiro</h3>
+                    <p>Gerencie sua agenda e atendimentos</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Login Cliente -->
+    <div id="login-cliente" class="screen">
+        <div class="login-container">
+            <div class="login-header">
+                <button class="btn-back" onclick="goBack()">
+                    <i class="fas fa-arrow-left"></i>
+                </button>
+                <h2>Login Cliente</h2>
+            </div>
+            <form class="login-form">
+                <div class="form-group">
+                    <label class="form-label">E-mail</label>
+                    <input type="email" class="form-control" placeholder="seu@email.com" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Senha</label>
+                    <input type="password" class="form-control" placeholder="Sua senha" required>
+                </div>
+                <button type="submit" class="btn btn--primary btn--full-width" onclick="loginCliente(event)">
+                    Entrar
+                </button>
+                <div class="login-footer">
+                    <a href="#" onclick="showRegister('cliente')">Não tem conta? Cadastre-se</a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Login Barbeiro -->
+    <div id="login-barbeiro" class="screen">
+        <div class="login-container">
+            <div class="login-header">
+                <button class="btn-back" onclick="goBack()">
+                    <i class="fas fa-arrow-left"></i>
+                </button>
+                <h2>Login Barbeiro</h2>
+            </div>
+            <form class="login-form">
+                <div class="form-group">
+                    <label class="form-label">E-mail Profissional</label>
+                    <input type="email" class="form-control" placeholder="barbeiro@email.com" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Senha</label>
+                    <input type="password" class="form-control" placeholder="Sua senha" required>
+                </div>
+                <button type="submit" class="btn btn--primary btn--full-width" onclick="loginBarbeiro(event)">
+                    Entrar
+                </button>
+                <div class="login-footer">
+                    <a href="#" onclick="showRegister('barbeiro')">Não tem conta? Cadastre-se</a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Dashboard Cliente -->
+    <div id="dashboard-cliente" class="screen">
+        <nav class="navbar">
+            <div class="navbar-brand">
+                <i class="fas fa-cut"></i>
+                <span>Elite Barber</span>
+            </div>
+            <div class="navbar-actions">
+                <button class="btn-icon" onclick="showNotifications()">
+                    <i class="fas fa-bell"></i>
+                    <span class="notification-badge">2</span>
+                </button>
+                <button class="btn-icon" onclick="showProfile('cliente')">
+                    <i class="fas fa-user-circle"></i>
+                </button>
+                <button class="btn-icon" onclick="logout()">
+                    <i class="fas fa-sign-out-alt"></i>
+                </button>
+            </div>
+        </nav>
+
+        <div class="main-content">
+            <div class="sidebar">
+                <ul class="sidebar-menu">
+                    <li class="menu-item active" onclick="showSection('home-cliente')">
+                        <i class="fas fa-home"></i>
+                        <span>Início</span>
+                    </li>
+                    <li class="menu-item" onclick="showSection('agendamentos-cliente')">
+                        <i class="fas fa-calendar-alt"></i>
+                        <span>Agendamentos</span>
+                    </li>
+                    <li class="menu-item" onclick="showSection('historico-cliente')">
+                        <i class="fas fa-history"></i>
+                        <span>Histórico</span>
+                    </li>
+                    <li class="menu-item" onclick="showSection('perfil-cliente')">
+                        <i class="fas fa-user"></i>
+                        <span>Perfil</span>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="content">
+                <!-- Home Cliente -->
+                <div id="home-cliente" class="content-section active">
+                    <div class="section-header">
+                        <h2>Bem-vindo de volta!</h2>
+                        <p>Encontre os melhores profissionais e agende seu corte</p>
+                    </div>
+
+                    <div class="services-showcase">
+                        <h3>Serviços em Destaque</h3>
+                        <div class="services-grid">
+                            <div class="service-card">
+                                <i class="fas fa-cut"></i>
+                                <h4>Corte + Barba</h4>
+                                <p>R$ 45,00</p>
+                                <span class="service-duration">60 min</span>
+                            </div>
+                            <div class="service-card">
+                                <i class="fas fa-scissors"></i>
+                                <h4>Corte Simples</h4>
+                                <p>R$ 25,00</p>
+                                <span class="service-duration">30 min</span>
+                            </div>
+                            <div class="service-card">
+                                <i class="fas fa-spa"></i>
+                                <h4>Tratamento</h4>
+                                <p>R$ 35,00</p>
+                                <span class="service-duration">45 min</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="barbeiros-section">
+                        <h3>Nossos Profissionais</h3>
+                        <div class="barbeiros-grid" id="barbeiros-lista">
+                            <!-- Barbeiros serão carregados via JS -->
+                        </div>
+                    </div>
+
+                    <button class="btn btn--primary floating-btn" onclick="showAgendamento()">
+                        <i class="fas fa-plus"></i>
+                        <span>Novo Agendamento</span>
+                    </button>
+                </div>
+
+                <!-- Agendamentos Cliente -->
+                <div id="agendamentos-cliente" class="content-section">
+                    <div class="section-header">
+                        <h2>Meus Agendamentos</h2>
+                        <button class="btn btn--primary" onclick="showAgendamento()">
+                            <i class="fas fa-plus"></i>
+                            Novo Agendamento
+                        </button>
+                    </div>
+                    <div class="agendamentos-list" id="agendamentos-lista">
+                        <!-- Agendamentos serão carregados via JS -->
+                    </div>
+                </div>
+
+                <!-- Histórico Cliente -->
+                <div id="historico-cliente" class="content-section">
+                    <div class="section-header">
+                        <h2>Histórico de Serviços</h2>
+                    </div>
+                    <div class="historico-list" id="historico-lista">
+                        <!-- Histórico será carregado via JS -->
+                    </div>
+                </div>
+
+                <!-- Perfil Cliente -->
+                <div id="perfil-cliente" class="content-section">
+                    <div class="section-header">
+                        <h2>Meu Perfil</h2>
+                    </div>
+                    <div class="profile-form">
+                        <div class="profile-avatar">
+                            <img src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150" alt="Avatar">
+                            <button class="btn-edit-avatar">
+                                <i class="fas fa-camera"></i>
+                            </button>
+                        </div>
+                        <form>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label class="form-label">Nome Completo</label>
+                                    <input type="text" class="form-control" value="João Silva">
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">E-mail</label>
+                                    <input type="email" class="form-control" value="joao@email.com">
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label class="form-label">Telefone</label>
+                                    <input type="tel" class="form-control" value="(11) 99999-9999">
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Data de Nascimento</label>
+                                    <input type="date" class="form-control" value="1990-01-01">
+                                </div>
+                            </div>
+                            <button type="submit" class="btn btn--primary">Salvar Alterações</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Dashboard Barbeiro -->
+    <div id="dashboard-barbeiro" class="screen">
+        <nav class="navbar">
+            <div class="navbar-brand">
+                <i class="fas fa-cut"></i>
+                <span>Elite Barber Pro</span>
+            </div>
+            <div class="navbar-actions">
+                <button class="btn-icon" onclick="showNotifications()">
+                    <i class="fas fa-bell"></i>
+                    <span class="notification-badge">3</span>
+                </button>
+                <button class="btn-icon" onclick="showProfile('barbeiro')">
+                    <i class="fas fa-user-circle"></i>
+                </button>
+                <button class="btn-icon" onclick="logout()">
+                    <i class="fas fa-sign-out-alt"></i>
+                </button>
+            </div>
+        </nav>
+
+        <div class="main-content">
+            <div class="sidebar">
+                <ul class="sidebar-menu">
+                    <li class="menu-item active" onclick="showSection('home-barbeiro')">
+                        <i class="fas fa-tachometer-alt"></i>
+                        <span>Dashboard</span>
+                    </li>
+                    <li class="menu-item" onclick="showSection('agenda-barbeiro')">
+                        <i class="fas fa-calendar-alt"></i>
+                        <span>Agenda</span>
+                    </li>
+                    <li class="menu-item" onclick="showSection('estoque-barbeiro')">
+                        <i class="fas fa-boxes"></i>
+                        <span>Estoque</span>
+                    </li>
+                    <li class="menu-item" onclick="showSection('historico-barbeiro')">
+                        <i class="fas fa-chart-line"></i>
+                        <span>Relatórios</span>
+                    </li>
+                    <li class="menu-item" onclick="showSection('perfil-barbeiro')">
+                        <i class="fas fa-user"></i>
+                        <span>Perfil</span>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="content">
+                <!-- Dashboard Barbeiro -->
+                <div id="home-barbeiro" class="content-section active">
+                    <div class="section-header">
+                        <h2>Dashboard</h2>
+                        <p>Visão geral do seu negócio</p>
+                    </div>
+
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-icon">
+                                <i class="fas fa-calendar-check"></i>
+                            </div>
+                            <div class="stat-content">
+                                <h4>Hoje</h4>
+                                <span class="stat-number">5</span>
+                                <p>Agendamentos</p>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon">
+                                <i class="fas fa-dollar-sign"></i>
+                            </div>
+                            <div class="stat-content">
+                                <h4>Faturamento</h4>
+                                <span class="stat-number">R$ 340</span>
+                                <p>Hoje</p>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon">
+                                <i class="fas fa-star"></i>
+                            </div>
+                            <div class="stat-content">
+                                <h4>Avaliação</h4>
+                                <span class="stat-number">4.9</span>
+                                <p>Média geral</p>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon">
+                                <i class="fas fa-users"></i>
+                            </div>
+                            <div class="stat-content">
+                                <h4>Clientes</h4>
+                                <span class="stat-number">124</span>
+                                <p>Este mês</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="agenda-preview">
+                        <h3>Próximos Agendamentos</h3>
+                        <div class="agendamentos-list" id="proximos-agendamentos">
+                            <!-- Próximos agendamentos serão carregados via JS -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Agenda Barbeiro -->
+                <div id="agenda-barbeiro" class="content-section">
+                    <div class="section-header">
+                        <h2>Agenda</h2>
+                        <div class="date-selector">
+                            <input type="date" class="form-control" value="2025-09-19" onchange="loadAgenda()">
+                        </div>
+                    </div>
+                    <div class="agenda-grid" id="agenda-grid">
+                        <!-- Agenda será carregada via JS -->
+                    </div>
+                </div>
+
+                <!-- Estoque Barbeiro -->
+                <div id="estoque-barbeiro" class="content-section">
+                    <div class="section-header">
+                        <h2>Controle de Estoque</h2>
+                        <button class="btn btn--primary" onclick="showAddProduto()">
+                            <i class="fas fa-plus"></i>
+                            Novo Produto
+                        </button>
+                    </div>
+                    <div class="estoque-list" id="estoque-lista">
+                        <!-- Estoque será carregado via JS -->
+                    </div>
+                </div>
+
+                <!-- Histórico/Relatórios Barbeiro -->
+                <div id="historico-barbeiro" class="content-section">
+                    <div class="section-header">
+                        <h2>Relatórios</h2>
+                        <div class="period-selector">
+                            <select class="form-control">
+                                <option>Últimos 7 dias</option>
+                                <option>Últimos 30 dias</option>
+                                <option>Este mês</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="reports-grid">
+                        <div class="report-card">
+                            <h4>Faturamento Total</h4>
+                            <span class="report-value">R$ 2.340,00</span>
+                            <span class="report-change positive">+12%</span>
+                        </div>
+                        <div class="report-card">
+                            <h4>Total de Atendimentos</h4>
+                            <span class="report-value">86</span>
+                            <span class="report-change positive">+8%</span>
+                        </div>
+                    </div>
+                    <div class="historico-list" id="historico-barbeiro-lista">
+                        <!-- Histórico será carregado via JS -->
+                    </div>
+                </div>
+
+                <!-- Perfil Barbeiro -->
+                <div id="perfil-barbeiro" class="content-section">
+                    <div class="section-header">
+                        <h2>Perfil Profissional</h2>
+                    </div>
+                    <div class="profile-form">
+                        <div class="profile-avatar">
+                            <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150" alt="Avatar">
+                            <button class="btn-edit-avatar">
+                                <i class="fas fa-camera"></i>
+                            </button>
+                        </div>
+                        <form>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label class="form-label">Nome Profissional</label>
+                                    <input type="text" class="form-control" value="Carlos Mendes">
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">E-mail</label>
+                                    <input type="email" class="form-control" value="carlos@elitebarber.com">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Especialidades</label>
+                                <input type="text" class="form-control" value="Corte Clássico, Barba, Bigode">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Preço Base</label>
+                                <input type="number" class="form-control" value="35" step="5">
+                            </div>
+                            <button type="submit" class="btn btn--primary">Salvar Alterações</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Agendamento -->
+    <div id="modal-agendamento" class="modal hidden">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Novo Agendamento</h3>
+                <button class="btn-close" onclick="closeModal('modal-agendamento')">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="form-agendamento">
+                    <div class="form-group">
+                        <label class="form-label">Barbeiro</label>
+                        <select class="form-control" id="select-barbeiro" required>
+                            <option value="">Selecione um barbeiro</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Serviço</label>
+                        <select class="form-control" id="select-servico" required>
+                            <option value="">Selecione um serviço</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Data</label>
+                        <input type="date" class="form-control" id="input-data" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Horário</label>
+                        <select class="form-control" id="select-horario" required>
+                            <option value="">Selecione um horário</option>
+                        </select>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn--outline" onclick="closeModal('modal-agendamento')">Cancelar</button>
+                <button class="btn btn--primary" onclick="confirmarAgendamento()">Confirmar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Notificações -->
+    <div id="modal-notificacoes" class="modal hidden">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Notificações</h3>
+                <button class="btn-close" onclick="closeModal('modal-notificacoes')">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="notifications-list" id="notifications-list">
+                    <!-- Notificações serão carregadas via JS -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
