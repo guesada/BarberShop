@@ -12,7 +12,10 @@ const seedDatabase = async () => {
       host: process.env.DB_HOST || 'localhost',
       user: process.env.DB_USER || 'root',
       password: process.env.DB_PASSWORD || '',
-      database: process.env.DB_NAME || 'barbershop_auth'
+      database: process.env.DB_NAME || 'barbershop_auth',
+      authPlugins: {
+        mysql_native_password: () => () => Buffer.alloc(0)
+      }
     });
 
     logger.info('Conectado ao banco para seed');

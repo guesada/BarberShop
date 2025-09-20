@@ -174,15 +174,98 @@ function showScreen(screenId) {
 
 // Global function declarations (available to onclick handlers)
 window.selectUserType = function(userType) {
-  console.log('Selecting user type:', userType);
+  console.log('🔄 Selecting user type:', userType);
   currentUserType = userType;
   
   if (userType === 'cliente') {
+    console.log('📱 Redirecting to cliente login');
     showScreen('login-cliente');
   } else if (userType === 'barbeiro') {
+    console.log('✂️ Redirecting to barbeiro login');
     showScreen('login-barbeiro');
   }
 };
+
+console.log('🚀 App.js carregado!');
+console.log('📋 selectUserType disponível:', typeof window.selectUserType);
+
+// Função para atualizar data e hora
+function updateDateTime() {
+  const now = new Date();
+  const options = { 
+    weekday: 'long', 
+    year: 'numeric', 
+    month: 'long', 
+    day: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit'
+  };
+  const dateTimeElement = document.getElementById('current-datetime');
+  if (dateTimeElement) {
+    dateTimeElement.textContent = now.toLocaleDateString('pt-BR', options);
+  }
+}
+
+// Função para agendar com barbeiro específico
+window.agendarComBarbeiro = function(barbeiroId) {
+  console.log('📅 Agendando com barbeiro ID:', barbeiroId);
+  // Aqui você pode implementar a lógica específica
+  showAgendamento();
+};
+
+// Sistema de alternância de tema
+window.toggleTheme = function() {
+  const body = document.body;
+  
+  // Alternar classe do tema
+  body.classList.toggle('dark-theme');
+  
+  // Salvar preferência e atualizar ícone
+  if (body.classList.contains('dark-theme')) {
+    localStorage.setItem('theme', 'dark');
+    console.log('🌙 Tema escuro ativado');
+  } else {
+    localStorage.setItem('theme', 'light');
+    console.log('☀️ Tema claro ativado');
+  }
+  
+  // Atualizar ícone
+  updateThemeIcon();
+};
+
+// Carregar tema salvo
+function loadSavedTheme() {
+  const savedTheme = localStorage.getItem('theme');
+  const body = document.body;
+  
+  if (savedTheme === 'dark') {
+    body.classList.add('dark-theme');
+    console.log('🌙 Tema escuro carregado');
+  } else {
+    body.classList.remove('dark-theme');
+    console.log('☀️ Tema claro carregado');
+  }
+  
+  // Atualizar ícone após um pequeno delay para garantir que o elemento existe
+  setTimeout(updateThemeIcon, 100);
+}
+
+// Atualizar ícone do tema
+function updateThemeIcon() {
+  const themeIcon = document.getElementById('theme-icon');
+  const body = document.body;
+  
+  if (themeIcon) {
+    if (body.classList.contains('dark-theme')) {
+      themeIcon.className = 'fas fa-sun';
+    } else {
+      themeIcon.className = 'fas fa-moon';
+    }
+    console.log('🎨 Ícone do tema atualizado');
+  } else {
+    console.log('⚠️ Ícone do tema não encontrado');
+  }
+}
 
 window.goBack = function() {
   console.log('Going back to user selection');
@@ -191,43 +274,215 @@ window.goBack = function() {
 };
 
 window.loginCliente = function(event) {
-  event.preventDefault();
-  console.log('Logging in cliente');
+  if (event) event.preventDefault();
+  console.log('🔑 Executando login do cliente...');
   
+  // Pegar dados do formulário
+  const form = document.getElementById('login-cliente-form');
+  const formData = new FormData(form);
+  const email = formData.get('email');
+  const name = email ? email.split('@')[0] : 'João Silva';
+  
+  // Simular login (em produção, aqui faria a validação real)
   currentUser = { 
     type: 'cliente', 
-    name: 'João Silva',
-    email: 'joao@email.com'
+    name: name.charAt(0).toUpperCase() + name.slice(1),
+    email: email || 'joao@email.com'
   };
+  
+  // Salvar dados do usuário para lembrar login
+  localStorage.setItem('currentUser', JSON.stringify(currentUser));
+  localStorage.setItem('isLoggedIn', 'true');
+  localStorage.setItem('loginTime', Date.now().toString());
+  
+  console.log('👤 Usuário logado:', currentUser);
+  console.log('💾 Login salvo no localStorage');
+  console.log('🔄 Redirecionando para dashboard...');
   
   showScreen('dashboard-cliente');
   setTimeout(() => {
-    loadClienteData();
+    loadClienteDashboard();
     updateNotificationBadge();
+    updateDateTime();
+    updateThemeIcon();
+    // Atualizar data/hora a cada minuto
+    setInterval(updateDateTime, 60000);
   }, 100);
 };
 
-window.loginBarbeiro = function(event) {
-  event.preventDefault();
-  console.log('Logging in barbeiro');
+// Função para carregar dados do dashboard do cliente
+function loadClienteDashboard() {
+  console.log('📊 Loading cliente dashboard');
   
+  // Atualizar nome do usuário
+  const userNameElement = document.getElementById('user-name');
+  if (userNameElement && currentUser) {
+    userNameElement.textContent = currentUser.name;
+  }
+  
+  // Carregar dados dinâmicos
+  loadUpcomingAppointments();
+  loadFavoriteBarbers();
+  updateStats();
+}
+
+// Carregar próximos agendamentos
+function loadUpcomingAppointments() {
+  const container = document.getElementById('upcoming-appointments-list');
+  if (!container) return;
+  
+  // Dados simulados - em produção viriam da API
+  const appointments = [
+    {
+      id: 1,
+      service: 'Corte + Barba',
+      barber: 'Carlos Mendes',
+      date: 'Amanhã',
+      time: '14:00',
+      status: 'confirmed',
+      location: 'Elite Barber - Centro'
+    },
+    {
+      id: 2,
+      service: 'Corte Simples',
+      barber: 'Roberto Silva',
+      date: 'Sex, 22',
+      time: '16:30',
+      status: 'pending',
+      location: 'Elite Barber - Centro'
+    }
+  ];
+  
+  container.innerHTML = appointments.map(apt => `
+    <div class="appointment-card ${apt.status === 'confirmed' ? 'featured' : ''}">
+      <div class="appointment-time">
+        <div class="time-day">${apt.date}</div>
+        <div class="time-hour">${apt.time}</div>
+      </div>
+      <div class="appointment-details">
+        <h3>${apt.service}</h3>
+        <p class="barber-name">
+          <i class="fas fa-user"></i>
+          ${apt.barber}
+        </p>
+        <p class="appointment-location">
+          <i class="fas fa-map-marker-alt"></i>
+          ${apt.location}
+        </p>
+      </div>
+      <div class="appointment-actions">
+        <button class="btn-small primary" title="Direções">
+          <i class="fas fa-directions"></i>
+        </button>
+        <button class="btn-small secondary" title="Editar">
+          <i class="fas fa-edit"></i>
+        </button>
+      </div>
+      <div class="appointment-status ${apt.status}">
+        <i class="fas fa-${apt.status === 'confirmed' ? 'check-circle' : 'clock'}"></i>
+        ${apt.status === 'confirmed' ? 'Confirmado' : 'Pendente'}
+      </div>
+    </div>
+  `).join('');
+}
+
+// Carregar barbeiros favoritos
+function loadFavoriteBarbers() {
+  const container = document.getElementById('favorite-barbers-list');
+  if (!container) return;
+  
+  // Usar dados do appData
+  const favoriteBarbers = appData.barbeiros.slice(0, 2);
+  
+  container.innerHTML = favoriteBarbers.map((barbeiro, index) => `
+    <div class="barber-card ${index === 0 ? 'premium' : ''}">
+      <div class="barber-avatar">
+        <img src="${barbeiro.foto}" alt="${barbeiro.nome}">
+        <div class="online-status ${index === 0 ? 'online' : 'offline'}"></div>
+      </div>
+      <div class="barber-info">
+        <h3>${barbeiro.nome}</h3>
+        <div class="barber-rating">
+          <div class="stars">
+            ${Array(Math.floor(barbeiro.avaliacao)).fill('<i class="fas fa-star"></i>').join('')}
+            ${barbeiro.avaliacao % 1 !== 0 ? '<i class="fas fa-star-half-alt"></i>' : ''}
+          </div>
+          <span class="rating-value">${barbeiro.avaliacao}</span>
+        </div>
+        <p class="barber-specialty">Especialista em ${barbeiro.especialidades[0]}</p>
+        <div class="barber-price">A partir de <strong>R$ ${barbeiro.preco_base}</strong></div>
+      </div>
+      <div class="barber-actions">
+        <button class="btn-small primary" onclick="agendarComBarbeiro(${barbeiro.id})">
+          <i class="fas fa-calendar-plus"></i>
+          Agendar
+        </button>
+      </div>
+    </div>
+  `).join('');
+}
+
+// Atualizar estatísticas
+function updateStats() {
+  // Simular dados dinâmicos
+  const stats = {
+    proximosAgendamentos: 2,
+    servicosConcluidos: 12,
+    avaliacaoMedia: 4.9,
+    gastoTotal: 340
+  };
+  
+  // Atualizar números nas estatísticas se necessário
+  console.log('📈 Stats updated:', stats);
+}
+
+window.loginBarbeiro = function(event) {
+  if (event) event.preventDefault();
+  console.log('✂️ Executando login do barbeiro...');
+  
+  // Pegar dados do formulário
+  const form = document.getElementById('login-barbeiro-form');
+  const formData = new FormData(form);
+  const email = formData.get('email');
+  const name = email ? email.split('@')[0] : 'Carlos Mendes';
+  
+  // Simular login (em produção, aqui faria a validação real)
   currentUser = { 
     type: 'barbeiro', 
-    name: 'Carlos Mendes',
-    email: 'carlos@elitebarber.com'
+    name: name.charAt(0).toUpperCase() + name.slice(1),
+    email: email || 'carlos@elitebarber.com'
   };
+  
+  // Salvar dados do usuário para lembrar login
+  localStorage.setItem('currentUser', JSON.stringify(currentUser));
+  localStorage.setItem('isLoggedIn', 'true');
+  localStorage.setItem('loginTime', Date.now().toString());
+  
+  console.log('👤 Barbeiro logado:', currentUser);
+  console.log('💾 Login salvo no localStorage');
+  console.log('🔄 Redirecionando para dashboard...');
   
   showScreen('dashboard-barbeiro');
   setTimeout(() => {
     loadBarbeiroData();
     updateNotificationBadge();
+    updateThemeIcon();
   }, 100);
 };
 
 window.logout = function() {
-  console.log('Logging out');
+  console.log('🚪 Fazendo logout...');
+  
+  // Limpar dados do usuário
   currentUser = null;
   currentUserType = null;
+  
+  // Limpar localStorage
+  localStorage.removeItem('currentUser');
+  localStorage.removeItem('isLoggedIn');
+  localStorage.removeItem('loginTime');
+  
+  console.log('🗑️ Dados de login removidos');
   
   // Close any open modals
   const modals = document.querySelectorAll('.modal');
@@ -239,9 +494,18 @@ window.logout = function() {
 
 // Navigation Functions
 window.showSection = function(sectionId) {
-  console.log('Showing section:', sectionId);
+  console.log('📍 Showing section:', sectionId);
   
-  // Update menu active state
+  // Update nav items active state (novo design)
+  const navItems = document.querySelectorAll('.nav-item');
+  navItems.forEach(item => item.classList.remove('active'));
+  
+  const activeNavItem = document.querySelector(`[onclick*="${sectionId}"]`);
+  if (activeNavItem) {
+    activeNavItem.classList.add('active');
+  }
+  
+  // Update old menu items (fallback)
   const menuItems = document.querySelectorAll('.menu-item');
   menuItems.forEach(item => item.classList.remove('active'));
   
@@ -257,8 +521,55 @@ window.showSection = function(sectionId) {
   const targetSection = document.getElementById(sectionId);
   if (targetSection) {
     targetSection.classList.add('active');
+    
+    // Carregar dados específicos da seção
+    loadSectionData(sectionId);
   }
 };
+
+// Carregar dados específicos de cada seção
+function loadSectionData(sectionId) {
+  switch(sectionId) {
+    case 'home-cliente':
+      loadClienteDashboard();
+      break;
+    case 'agendamentos-cliente':
+      loadAgendamentosCliente();
+      break;
+    case 'historico-cliente':
+      loadHistoricoCliente();
+      break;
+    case 'perfil-cliente':
+      loadPerfilCliente();
+      break;
+    case 'favoritos-cliente':
+      loadFavoritosCliente();
+      break;
+    default:
+      console.log('📄 Seção carregada:', sectionId);
+  }
+}
+
+// Funções para carregar dados das seções
+function loadAgendamentosCliente() {
+  console.log('📅 Loading agendamentos cliente');
+  // Implementar carregamento de agendamentos
+}
+
+function loadHistoricoCliente() {
+  console.log('📜 Loading histórico cliente');
+  // Implementar carregamento de histórico
+}
+
+function loadPerfilCliente() {
+  console.log('👤 Loading perfil cliente');
+  // Implementar carregamento de perfil
+}
+
+function loadFavoritosCliente() {
+  console.log('❤️ Loading favoritos cliente');
+  // Implementar carregamento de favoritos
+}
 
 // Modal Functions
 window.showModal = function(modalId) {
@@ -793,12 +1104,506 @@ window.loadAgenda = function() {
   `;
 };
 
+// Registration Functions
+window.showRegister = function(userType) {
+  console.log('📝 Showing registration for:', userType);
+  currentUserType = userType;
+  
+  if (userType === 'cliente') {
+    showScreen('register-cliente');
+    // Limpar formulário
+    const form = document.getElementById('register-cliente-form');
+    if (form) form.reset();
+  } else if (userType === 'barbeiro') {
+    showScreen('register-barbeiro');
+    // Limpar formulário
+    const form = document.getElementById('register-barbeiro-form');
+    if (form) form.reset();
+  }
+};
+
+window.showLogin = function(userType) {
+  console.log('🔑 Showing login for:', userType);
+  currentUserType = userType;
+  
+  if (userType === 'cliente') {
+    showScreen('login-cliente');
+  } else if (userType === 'barbeiro') {
+    showScreen('login-barbeiro');
+  }
+};
+
+// Debug: Verificar se todas as funções estão disponíveis
+console.log('🔍 Funções disponíveis:');
+console.log('- selectUserType:', typeof window.selectUserType);
+console.log('- showRegister:', typeof window.showRegister);
+console.log('- showLogin:', typeof window.showLogin);
+console.log('- goBack:', typeof window.goBack);
+
+// Password validation
+function validatePassword(password) {
+  const requirements = {
+    length: password.length >= 8,
+    uppercase: /[A-Z]/.test(password),
+    lowercase: /[a-z]/.test(password),
+    number: /\d/.test(password),
+    special: /[@$!%*?&]/.test(password)
+  };
+  
+  const score = Object.values(requirements).filter(Boolean).length;
+  return { requirements, score, isValid: score === 5 };
+}
+
+function updatePasswordStrength(passwordInput, strengthContainer) {
+  const password = passwordInput.value;
+  const validation = validatePassword(password);
+  
+  if (!strengthContainer) return;
+  
+  const bars = strengthContainer.querySelectorAll('.strength-bar');
+  const text = strengthContainer.querySelector('.strength-text');
+  
+  // Reset bars
+  bars.forEach(bar => {
+    bar.className = 'strength-bar';
+  });
+  
+  if (password.length === 0) {
+    if (text) text.textContent = '';
+    return;
+  }
+  
+  // Update bars based on score
+  const score = validation.score;
+  let strengthLevel = 'weak';
+  let strengthText = 'Fraca';
+  
+  if (score >= 4) {
+    strengthLevel = 'strong';
+    strengthText = 'Forte';
+  } else if (score >= 3) {
+    strengthLevel = 'medium';
+    strengthText = 'Média';
+  }
+  
+  // Fill bars
+  for (let i = 0; i < Math.min(score, bars.length); i++) {
+    bars[i].classList.add(strengthLevel);
+  }
+  
+  if (text) {
+    text.textContent = `Força da senha: ${strengthText}`;
+  }
+}
+
+function showFieldError(field, message) {
+  // Remove existing error
+  const existingError = field.parentNode.querySelector('.form-error');
+  if (existingError) {
+    existingError.remove();
+  }
+  
+  // Add error class
+  field.classList.add('error');
+  field.classList.remove('success');
+  
+  // Add error message
+  const errorDiv = document.createElement('div');
+  errorDiv.className = 'form-error';
+  errorDiv.innerHTML = `<i class="fas fa-exclamation-circle"></i> ${message}`;
+  field.parentNode.appendChild(errorDiv);
+}
+
+function showFieldSuccess(field) {
+  // Remove existing error
+  const existingError = field.parentNode.querySelector('.form-error');
+  if (existingError) {
+    existingError.remove();
+  }
+  
+  // Add success class
+  field.classList.remove('error');
+  field.classList.add('success');
+}
+
+function clearFieldValidation(field) {
+  const existingError = field.parentNode.querySelector('.form-error');
+  if (existingError) {
+    existingError.remove();
+  }
+  
+  field.classList.remove('error', 'success');
+}
+
+// Registration form handlers
+function handleClienteRegistration(event) {
+  event.preventDefault();
+  
+  const form = event.target;
+  const formData = new FormData(form);
+  const data = Object.fromEntries(formData.entries());
+  
+  // Validation
+  let isValid = true;
+  
+  // Clear previous validations
+  form.querySelectorAll('.form-control').forEach(field => {
+    clearFieldValidation(field);
+  });
+  
+  // Name validation
+  if (!data.name || data.name.trim().length < 2) {
+    showFieldError(form.querySelector('[name="name"]'), 'Nome deve ter pelo menos 2 caracteres');
+    isValid = false;
+  }
+  
+  // Email validation
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if (!data.email || !emailRegex.test(data.email)) {
+    showFieldError(form.querySelector('[name="email"]'), 'E-mail inválido');
+    isValid = false;
+  }
+  
+  // Password validation
+  const passwordValidation = validatePassword(data.password);
+  if (!passwordValidation.isValid) {
+    showFieldError(form.querySelector('[name="password"]'), 'Senha deve conter: maiúscula, minúscula, número e símbolo');
+    isValid = false;
+  }
+  
+  // Confirm password
+  if (data.password !== data.confirmPassword) {
+    showFieldError(form.querySelector('[name="confirmPassword"]'), 'Senhas não coincidem');
+    isValid = false;
+  }
+  
+  // Terms acceptance
+  if (!data.terms) {
+    showFieldError(form.querySelector('[name="terms"]').parentNode, 'Você deve aceitar os termos de uso');
+    isValid = false;
+  }
+  
+  if (!isValid) {
+    return;
+  }
+  
+  // Show loading state
+  const submitBtn = form.querySelector('button[type="submit"]');
+  const originalText = submitBtn.innerHTML;
+  submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Criando conta...';
+  submitBtn.classList.add('loading');
+  submitBtn.disabled = true;
+  
+  // Prepare data for API
+  const registrationData = {
+    name: data.name.trim(),
+    email: data.email.toLowerCase().trim(),
+    password: data.password,
+    userType: 'cliente',
+    phone: data.phone || null
+  };
+  
+  // Call registration API
+  registerUser(registrationData)
+    .then(response => {
+      if (response.success) {
+        showSuccessMessage(form, 'Conta criada com sucesso! Redirecionando para login...');
+        setTimeout(() => {
+          showLogin('cliente');
+        }, 2000);
+      } else {
+        throw new Error(response.message || 'Erro ao criar conta');
+      }
+    })
+    .catch(error => {
+      console.error('Registration error:', error);
+      showErrorMessage(form, error.message || 'Erro ao criar conta. Tente novamente.');
+    })
+    .finally(() => {
+      submitBtn.classList.remove('loading');
+      submitBtn.disabled = false;
+      submitBtn.innerHTML = originalText;
+    });
+}
+
+function handleBarbeiroRegistration(event) {
+  event.preventDefault();
+  
+  const form = event.target;
+  const formData = new FormData(form);
+  const data = Object.fromEntries(formData.entries());
+  
+  // Get selected specialties
+  const specialties = Array.from(form.querySelectorAll('[name="specialties"]:checked'))
+    .map(checkbox => checkbox.value);
+  
+  // Validation
+  let isValid = true;
+  
+  // Clear previous validations
+  form.querySelectorAll('.form-control').forEach(field => {
+    clearFieldValidation(field);
+  });
+  
+  // Name validation
+  if (!data.name || data.name.trim().length < 2) {
+    showFieldError(form.querySelector('[name="name"]'), 'Nome deve ter pelo menos 2 caracteres');
+    isValid = false;
+  }
+  
+  // Email validation
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if (!data.email || !emailRegex.test(data.email)) {
+    showFieldError(form.querySelector('[name="email"]'), 'E-mail inválido');
+    isValid = false;
+  }
+  
+  // Phone validation (required for barbers)
+  if (!data.phone || data.phone.trim().length < 10) {
+    showFieldError(form.querySelector('[name="phone"]'), 'Telefone é obrigatório');
+    isValid = false;
+  }
+  
+  // Password validation
+  const passwordValidation = validatePassword(data.password);
+  if (!passwordValidation.isValid) {
+    showFieldError(form.querySelector('[name="password"]'), 'Senha deve conter: maiúscula, minúscula, número e símbolo');
+    isValid = false;
+  }
+  
+  // Confirm password
+  if (data.password !== data.confirmPassword) {
+    showFieldError(form.querySelector('[name="confirmPassword"]'), 'Senhas não coincidem');
+    isValid = false;
+  }
+  
+  // Experience validation
+  if (!data.experience) {
+    showFieldError(form.querySelector('[name="experience"]'), 'Selecione sua experiência');
+    isValid = false;
+  }
+  
+  // Specialties validation
+  if (specialties.length === 0) {
+    const checkboxGroup = form.querySelector('.checkbox-group');
+    showFieldError(checkboxGroup, 'Selecione pelo menos uma especialidade');
+    isValid = false;
+  }
+  
+  // Terms acceptance
+  if (!data.terms) {
+    showFieldError(form.querySelector('[name="terms"]').parentNode, 'Você deve aceitar os termos de uso');
+    isValid = false;
+  }
+  
+  if (!isValid) {
+    return;
+  }
+  
+  // Show loading state
+  const submitBtn = form.querySelector('button[type="submit"]');
+  const originalText = submitBtn.innerHTML;
+  submitBtn.classList.add('loading');
+  submitBtn.disabled = true;
+  
+  // Prepare data for API
+  const registrationData = {
+    name: data.name.trim(),
+    email: data.email.toLowerCase().trim(),
+    password: data.password,
+    userType: 'barbeiro',
+    phone: data.phone.trim(),
+    experienceYears: parseInt(data.experience),
+    specialties: specialties
+  };
+  
+  // Call registration API
+  registerUser(registrationData)
+    .then(response => {
+      if (response.success) {
+        showSuccessMessage(form, 'Conta profissional criada com sucesso! Redirecionando para login...');
+        setTimeout(() => {
+          showLogin('barbeiro');
+        }, 2000);
+      } else {
+        throw new Error(response.message || 'Erro ao criar conta');
+      }
+    })
+    .catch(error => {
+      console.error('Registration error:', error);
+      showErrorMessage(form, error.message || 'Erro ao criar conta. Tente novamente.');
+    })
+    .finally(() => {
+      submitBtn.classList.remove('loading');
+      submitBtn.disabled = false;
+      submitBtn.innerHTML = originalText;
+    });
+}
+
+// API call function
+async function registerUser(userData) {
+  try {
+    const response = await fetch('/api/users/register', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(userData)
+    });
+    
+    const data = await response.json();
+    
+    if (!response.ok) {
+      throw new Error(data.message || `HTTP error! status: ${response.status}`);
+    }
+    
+    return data;
+  } catch (error) {
+    console.error('API Error:', error);
+    throw error;
+  }
+}
+
+function showSuccessMessage(form, message) {
+  // Remove existing messages
+  const existingMessage = form.querySelector('.success-message, .error-message');
+  if (existingMessage) {
+    existingMessage.remove();
+  }
+  
+  const messageDiv = document.createElement('div');
+  messageDiv.className = 'success-message';
+  messageDiv.innerHTML = `<i class="fas fa-check-circle"></i> ${message}`;
+  
+  form.insertBefore(messageDiv, form.firstChild);
+}
+
+function showErrorMessage(form, message) {
+  // Remove existing messages
+  const existingMessage = form.querySelector('.success-message, .error-message');
+  if (existingMessage) {
+    existingMessage.remove();
+  }
+  
+  const messageDiv = document.createElement('div');
+  messageDiv.className = 'error-message';
+  messageDiv.innerHTML = `<i class="fas fa-exclamation-triangle"></i> ${message}`;
+  
+  form.insertBefore(messageDiv, form.firstChild);
+}
+
+// Utility functions for terms and privacy
+window.showTerms = function() {
+  alert('Termos de Uso:\n\nAo usar nossos serviços, você concorda em:\n- Fornecer informações verdadeiras\n- Respeitar outros usuários\n- Cumprir horários agendados\n- Não usar o serviço para fins ilegais');
+};
+
+window.showPrivacy = function() {
+  alert('Política de Privacidade:\n\nSeus dados são protegidos e usados apenas para:\n- Prestação dos serviços\n- Comunicação sobre agendamentos\n- Melhorias na plataforma\n\nNão compartilhamos seus dados com terceiros.');
+};
+
+// Verificar se usuário já está logado
+function checkSavedLogin() {
+  const isLoggedIn = localStorage.getItem('isLoggedIn');
+  const savedUser = localStorage.getItem('currentUser');
+  const loginTime = localStorage.getItem('loginTime');
+  
+  if (isLoggedIn === 'true' && savedUser && loginTime) {
+    // Verificar se o login não expirou (7 dias)
+    const sevenDays = 7 * 24 * 60 * 60 * 1000;
+    const currentTime = Date.now();
+    const timeDiff = currentTime - parseInt(loginTime);
+    
+    if (timeDiff < sevenDays) {
+      // Login ainda válido
+      currentUser = JSON.parse(savedUser);
+      console.log('🔄 Login automático:', currentUser);
+      
+      // Redirecionar para o dashboard apropriado
+      if (currentUser.type === 'cliente') {
+        showScreen('dashboard-cliente');
+        setTimeout(() => {
+          loadClienteDashboard();
+          updateNotificationBadge();
+          updateDateTime();
+          updateThemeIcon();
+          setInterval(updateDateTime, 60000);
+        }, 100);
+      } else if (currentUser.type === 'barbeiro') {
+        showScreen('dashboard-barbeiro');
+        setTimeout(() => {
+          loadBarbeiroData();
+          updateNotificationBadge();
+          updateThemeIcon();
+        }, 100);
+      }
+      
+      return true; // Usuário logado automaticamente
+    } else {
+      // Login expirado, limpar dados
+      console.log('⏰ Login expirado, limpando dados...');
+      localStorage.removeItem('currentUser');
+      localStorage.removeItem('isLoggedIn');
+      localStorage.removeItem('loginTime');
+    }
+  }
+  
+  return false; // Usuário não logado
+}
+
 // Event Listeners
 document.addEventListener('DOMContentLoaded', function() {
   console.log('DOM Content Loaded - Elite Barber App Initialized');
   
-  // Show initial screen
-  showScreen('user-selection');
+  // Carregar tema salvo
+  loadSavedTheme();
+  
+  // Verificar login salvo
+  const isAutoLoggedIn = checkSavedLogin();
+  
+  // Se não foi logado automaticamente, mostrar tela de seleção
+  if (!isAutoLoggedIn) {
+    showScreen('user-selection');
+  }
+  
+  // Add click listeners for user cards as backup
+  const clienteCard = document.querySelector('.user-card[onclick*="cliente"]');
+  const barbeiroCard = document.querySelector('.user-card[onclick*="barbeiro"]');
+  
+  if (clienteCard) {
+    clienteCard.addEventListener('click', function() {
+      console.log('🖱️ Cliente card clicked via event listener');
+      selectUserType('cliente');
+    });
+  }
+  
+  if (barbeiroCard) {
+    barbeiroCard.addEventListener('click', function() {
+      console.log('🖱️ Barbeiro card clicked via event listener');
+      selectUserType('barbeiro');
+    });
+  }
+  
+  // Add click listeners for register links as backup
+  const registerLinks = document.querySelectorAll('a[onclick*="showRegister"]');
+  registerLinks.forEach(link => {
+    link.addEventListener('click', function(e) {
+      e.preventDefault();
+      const onclick = this.getAttribute('onclick');
+      const userType = onclick.match(/showRegister\('(.+?)'\)/)[1];
+      console.log('📝 Register link clicked for:', userType);
+      showRegister(userType);
+    });
+  });
+  
+  // Add click listener for theme toggle button as backup
+  const themeToggleBtn = document.querySelector('.theme-toggle');
+  if (themeToggleBtn) {
+    themeToggleBtn.addEventListener('click', function(e) {
+      e.preventDefault();
+      console.log('🎨 Theme toggle clicked via event listener');
+      toggleTheme();
+    });
+  }
   
   // Update notification badge on load
   updateNotificationBadge();
@@ -811,9 +1616,81 @@ document.addEventListener('DOMContentLoaded', function() {
     }
   });
   
-  // Prevent form default submission
+  // Add event listeners for login forms
+  const loginClienteForm = document.getElementById('login-cliente-form');
+  const loginBarbeiroForm = document.getElementById('login-barbeiro-form');
+  
+  if (loginClienteForm) {
+    loginClienteForm.addEventListener('submit', function(event) {
+      event.preventDefault();
+      console.log('🔑 Login cliente form submitted');
+      loginCliente(event);
+    });
+  }
+  
+  if (loginBarbeiroForm) {
+    loginBarbeiroForm.addEventListener('submit', function(event) {
+      event.preventDefault();
+      console.log('✂️ Login barbeiro form submitted');
+      loginBarbeiro(event);
+    });
+  }
+
+  // Add event listeners for registration forms
+  const clienteForm = document.getElementById('register-cliente-form');
+  const barbeiroForm = document.getElementById('register-barbeiro-form');
+  
+  if (clienteForm) {
+    clienteForm.addEventListener('submit', handleClienteRegistration);
+    
+    // Add real-time validation for cliente form
+    const emailField = clienteForm.querySelector('[name="email"]');
+    const passwordField = clienteForm.querySelector('[name="password"]');
+    const confirmPasswordField = clienteForm.querySelector('[name="confirmPassword"]');
+    
+    if (emailField) {
+      emailField.addEventListener('blur', function() {
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (this.value && !emailRegex.test(this.value)) {
+          showFieldError(this, 'E-mail inválido');
+        } else if (this.value) {
+          showFieldSuccess(this);
+        }
+      });
+    }
+    
+    if (passwordField) {
+      passwordField.addEventListener('input', function() {
+        const validation = validatePassword(this.value);
+        if (this.value && !validation.isValid) {
+          showFieldError(this, 'Senha deve conter: maiúscula, minúscula, número e símbolo');
+        } else if (this.value && validation.isValid) {
+          showFieldSuccess(this);
+        }
+      });
+    }
+    
+    if (confirmPasswordField && passwordField) {
+      confirmPasswordField.addEventListener('input', function() {
+        if (this.value && this.value !== passwordField.value) {
+          showFieldError(this, 'Senhas não coincidem');
+        } else if (this.value && this.value === passwordField.value) {
+          showFieldSuccess(this);
+        }
+      });
+    }
+  }
+  
+  if (barbeiroForm) {
+    barbeiroForm.addEventListener('submit', handleBarbeiroRegistration);
+  }
+  
+  // Prevent form default submission for other forms
   document.addEventListener('submit', function(e) {
-    e.preventDefault();
+    // Only prevent default for forms that don't have specific handlers
+    if (!e.target.id || (e.target.id !== 'register-cliente-form' && e.target.id !== 'register-barbeiro-form')) {
+      e.preventDefault();
+    }
   });
   
   console.log('Application ready with', appData.barbeiros.length, 'barbeiros and', appData.servicos.length, 'servicos');

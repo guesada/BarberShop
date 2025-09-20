@@ -154,7 +154,62 @@ const validateService = [
   
   body('duration')
     .isInt({ min: 15, max: 240 })
-    .withMessage('Duração deve ser entre 15 e 240 minutos')
+    .withMessage('Duração deve ser entre 15 e 240 minutos'),
+  
+  body('category')
+    .optional()
+    .isLength({ min: 2, max: 50 })
+    .withMessage('Categoria deve ter entre 2 e 50 caracteres')
+];
+
+// Validações para perfil de barbeiro
+const validateBarberProfile = [
+  body('specialties')
+    .isArray({ min: 1 })
+    .withMessage('Especialidades devem ser um array com pelo menos um item'),
+  
+  body('specialties.*')
+    .isString()
+    .isLength({ min: 2, max: 50 })
+    .withMessage('Cada especialidade deve ter entre 2 e 50 caracteres'),
+  
+  body('bio')
+    .optional()
+    .isLength({ max: 1000 })
+    .withMessage('Bio não pode exceder 1000 caracteres'),
+  
+  body('experienceYears')
+    .isInt({ min: 0, max: 50 })
+    .withMessage('Anos de experiência deve ser entre 0 e 50'),
+  
+  body('basePrice')
+    .isFloat({ min: 0 })
+    .withMessage('Preço base deve ser um valor positivo'),
+  
+  body('workingHours')
+    .isObject()
+    .withMessage('Horários de trabalho devem ser um objeto'),
+  
+  body('isAvailable')
+    .optional()
+    .isBoolean()
+    .withMessage('Disponibilidade deve ser um valor booleano')
+];
+
+// Validações para avaliações
+const validateReview = [
+  body('appointmentId')
+    .isInt({ min: 1 })
+    .withMessage('ID do agendamento deve ser um número inteiro positivo'),
+  
+  body('rating')
+    .isInt({ min: 1, max: 5 })
+    .withMessage('Avaliação deve ser entre 1 e 5 estrelas'),
+  
+  body('comment')
+    .optional()
+    .isLength({ max: 1000 })
+    .withMessage('Comentário não pode exceder 1000 caracteres')
 ];
 
 module.exports = {
@@ -164,5 +219,7 @@ module.exports = {
   validateUserId,
   validatePagination,
   validateAppointment,
-  validateService
+  validateService,
+  validateBarberProfile,
+  validateReview
 };

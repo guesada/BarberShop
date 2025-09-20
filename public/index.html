@@ -17,12 +17,12 @@
                 <p class="hero-subtitle">Experiência premium em barbearia</p>
             </div>
             <div class="selection-cards">
-                <div class="user-card" onclick="selectUserType('cliente')">
+                <div class="user-card" onclick="selectUserType('cliente')" style="cursor: pointer; user-select: none;">
                     <i class="fas fa-user"></i>
                     <h3>Cliente</h3>
                     <p>Agende seus cortes e cuide do seu visual</p>
                 </div>
-                <div class="user-card" onclick="selectUserType('barbeiro')">
+                <div class="user-card" onclick="selectUserType('barbeiro')" style="cursor: pointer; user-select: none;">
                     <i class="fas fa-scissors"></i>
                     <h3>Barbeiro</h3>
                     <p>Gerencie sua agenda e atendimentos</p>
@@ -40,20 +40,20 @@
                 </button>
                 <h2>Login Cliente</h2>
             </div>
-            <form class="login-form">
+            <form class="login-form" id="login-cliente-form">
                 <div class="form-group">
                     <label class="form-label">E-mail</label>
-                    <input type="email" class="form-control" placeholder="seu@email.com" required>
+                    <input type="email" name="email" class="form-control" placeholder="seu@email.com" required>
                 </div>
                 <div class="form-group">
                     <label class="form-label">Senha</label>
-                    <input type="password" class="form-control" placeholder="Sua senha" required>
+                    <input type="password" name="password" class="form-control" placeholder="Sua senha" required>
                 </div>
-                <button type="submit" class="btn btn--primary btn--full-width" onclick="loginCliente(event)">
+                <button type="submit" class="btn btn--primary btn--full-width">
                     Entrar
                 </button>
                 <div class="login-footer">
-                    <a href="#" onclick="showRegister('cliente')">Não tem conta? Cadastre-se</a>
+                    <a href="#" onclick="showRegister('cliente')" style="color: #2180bd; text-decoration: underline;">Não tem conta? Cadastre-se</a>
                 </div>
             </form>
         </div>
@@ -68,16 +68,16 @@
                 </button>
                 <h2>Login Barbeiro</h2>
             </div>
-            <form class="login-form">
+            <form class="login-form" id="login-barbeiro-form">
                 <div class="form-group">
                     <label class="form-label">E-mail Profissional</label>
-                    <input type="email" class="form-control" placeholder="barbeiro@email.com" required>
+                    <input type="email" name="email" class="form-control" placeholder="barbeiro@email.com" required>
                 </div>
                 <div class="form-group">
                     <label class="form-label">Senha</label>
-                    <input type="password" class="form-control" placeholder="Sua senha" required>
+                    <input type="password" name="password" class="form-control" placeholder="Sua senha" required>
                 </div>
-                <button type="submit" class="btn btn--primary btn--full-width" onclick="loginBarbeiro(event)">
+                <button type="submit" class="btn btn--primary btn--full-width">
                     Entrar
                 </button>
                 <div class="login-footer">
@@ -87,56 +87,479 @@
         </div>
     </div>
 
+    <!-- Cadastro Cliente -->
+    <div id="register-cliente" class="screen">
+        <div class="login-container">
+            <div class="login-header">
+                <button class="btn-back" onclick="goBack()">
+                    <i class="fas fa-arrow-left"></i>
+                </button>
+                <h2>Cadastro Cliente</h2>
+            </div>
+            <form class="login-form" id="register-cliente-form">
+                <div class="form-group">
+                    <label class="form-label">Nome Completo</label>
+                    <input type="text" name="name" class="form-control" placeholder="Seu nome completo" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">E-mail</label>
+                    <input type="email" name="email" class="form-control" placeholder="seu@email.com" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Telefone</label>
+                    <input type="tel" name="phone" class="form-control" placeholder="(11) 99999-9999">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Senha</label>
+                    <input type="password" name="password" class="form-control" placeholder="Mínimo 8 caracteres" required>
+                    <div class="password-requirements">
+                        <small>A senha deve conter: maiúscula, minúscula, número e símbolo</small>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Confirmar Senha</label>
+                    <input type="password" name="confirmPassword" class="form-control" placeholder="Confirme sua senha" required>
+                </div>
+                <div class="form-group">
+                    <label class="checkbox-container">
+                        <input type="checkbox" name="terms" required>
+                        <span class="checkmark"></span>
+                        Aceito os <a href="#" onclick="showTerms()">termos de uso</a>
+                    </label>
+                </div>
+                <button type="submit" class="btn btn--primary btn--full-width">
+                    <i class="fas fa-user-plus"></i>
+                    Criar Conta
+                </button>
+                <div class="login-footer">
+                    <a href="#" onclick="showLogin('cliente')">Já tem conta? Faça login</a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Cadastro Barbeiro -->
+    <div id="register-barbeiro" class="screen">
+        <div class="login-container">
+            <div class="login-header">
+                <button class="btn-back" onclick="goBack()">
+                    <i class="fas fa-arrow-left"></i>
+                </button>
+                <h2>Cadastro Barbeiro</h2>
+            </div>
+            <form class="login-form" id="register-barbeiro-form">
+                <div class="form-group">
+                    <label class="form-label">Nome Profissional</label>
+                    <input type="text" name="name" class="form-control" placeholder="Seu nome profissional" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">E-mail Profissional</label>
+                    <input type="email" name="email" class="form-control" placeholder="barbeiro@email.com" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Telefone</label>
+                    <input type="tel" name="phone" class="form-control" placeholder="(11) 99999-9999" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Senha</label>
+                    <input type="password" name="password" class="form-control" placeholder="Mínimo 8 caracteres" required>
+                    <div class="password-requirements">
+                        <small>A senha deve conter: maiúscula, minúscula, número e símbolo</small>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Confirmar Senha</label>
+                    <input type="password" name="confirmPassword" class="form-control" placeholder="Confirme sua senha" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Anos de Experiência</label>
+                    <select name="experience" class="form-control" required>
+                        <option value="">Selecione...</option>
+                        <option value="0">Iniciante (0-1 anos)</option>
+                        <option value="2">Júnior (2-3 anos)</option>
+                        <option value="4">Pleno (4-7 anos)</option>
+                        <option value="8">Sênior (8+ anos)</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Especialidades</label>
+                    <div class="checkbox-group">
+                        <label class="checkbox-container">
+                            <input type="checkbox" name="specialties" value="Corte Clássico">
+                            <span class="checkmark"></span>
+                            Corte Clássico
+                        </label>
+                        <label class="checkbox-container">
+                            <input type="checkbox" name="specialties" value="Degradê">
+                            <span class="checkmark"></span>
+                            Degradê
+                        </label>
+                        <label class="checkbox-container">
+                            <input type="checkbox" name="specialties" value="Barba">
+                            <span class="checkmark"></span>
+                            Barba
+                        </label>
+                        <label class="checkbox-container">
+                            <input type="checkbox" name="specialties" value="Bigode">
+                            <span class="checkmark"></span>
+                            Bigode
+                        </label>
+                        <label class="checkbox-container">
+                            <input type="checkbox" name="specialties" value="Sobrancelha">
+                            <span class="checkmark"></span>
+                            Sobrancelha
+                        </label>
+                        <label class="checkbox-container">
+                            <input type="checkbox" name="specialties" value="Tratamentos">
+                            <span class="checkmark"></span>
+                            Tratamentos
+                        </label>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="checkbox-container">
+                        <input type="checkbox" name="terms" required>
+                        <span class="checkmark"></span>
+                        Aceito os <a href="#" onclick="showTerms()">termos de uso</a> e <a href="#" onclick="showPrivacy()">política de privacidade</a>
+                    </label>
+                </div>
+                <button type="submit" class="btn btn--primary btn--full-width">
+                    <i class="fas fa-scissors"></i>
+                    Criar Conta Profissional
+                </button>
+                <div class="login-footer">
+                    <a href="#" onclick="showLogin('barbeiro')">Já tem conta? Faça login</a>
+                </div>
+            </form>
+        </div>
+    </div>
+
     <!-- Dashboard Cliente -->
     <div id="dashboard-cliente" class="screen">
-        <nav class="navbar">
-            <div class="navbar-brand">
-                <i class="fas fa-cut"></i>
-                <span>Elite Barber</span>
+        <!-- Header moderno -->
+        <header class="app-header">
+            <div class="header-left">
+                <div class="brand-logo">
+                    <i class="fas fa-cut"></i>
+                    <span class="brand-name">Elite Barber</span>
+                </div>
             </div>
-            <div class="navbar-actions">
-                <button class="btn-icon" onclick="showNotifications()">
-                    <i class="fas fa-bell"></i>
-                    <span class="notification-badge">2</span>
+            <div class="header-center">
+                <div class="welcome-message">
+                    <span class="greeting">Olá, <strong id="user-name">João Silva</strong></span>
+                    <span class="date-time" id="current-datetime"></span>
+                </div>
+            </div>
+            <div class="header-right">
+                <button class="header-btn theme-toggle" onclick="toggleTheme()" title="Alternar Tema">
+                    <i class="fas fa-moon" id="theme-icon"></i>
                 </button>
-                <button class="btn-icon" onclick="showProfile('cliente')">
+                <button class="header-btn" onclick="showNotifications()" title="Notificações">
+                    <i class="fas fa-bell"></i>
+                    <span class="notification-count">3</span>
+                </button>
+                <button class="header-btn" onclick="showProfile('cliente')" title="Perfil">
                     <i class="fas fa-user-circle"></i>
                 </button>
-                <button class="btn-icon" onclick="logout()">
+                <button class="header-btn logout-btn" onclick="logout()" title="Sair">
                     <i class="fas fa-sign-out-alt"></i>
                 </button>
             </div>
-        </nav>
+        </header>
 
-        <div class="main-content">
-            <div class="sidebar">
-                <ul class="sidebar-menu">
-                    <li class="menu-item active" onclick="showSection('home-cliente')">
-                        <i class="fas fa-home"></i>
-                        <span>Início</span>
-                    </li>
-                    <li class="menu-item" onclick="showSection('agendamentos-cliente')">
-                        <i class="fas fa-calendar-alt"></i>
-                        <span>Agendamentos</span>
-                    </li>
-                    <li class="menu-item" onclick="showSection('historico-cliente')">
-                        <i class="fas fa-history"></i>
-                        <span>Histórico</span>
-                    </li>
-                    <li class="menu-item" onclick="showSection('perfil-cliente')">
-                        <i class="fas fa-user"></i>
-                        <span>Perfil</span>
-                    </li>
-                </ul>
-            </div>
-
-            <div class="content">
-                <!-- Home Cliente -->
-                <div id="home-cliente" class="content-section active">
-                    <div class="section-header">
-                        <h2>Bem-vindo de volta!</h2>
-                        <p>Encontre os melhores profissionais e agende seu corte</p>
+        <!-- Layout principal -->
+        <div class="app-layout">
+            <!-- Sidebar elegante -->
+            <aside class="app-sidebar">
+                <nav class="sidebar-nav">
+                    <div class="nav-section">
+                        <h3 class="nav-title">Menu Principal</h3>
+                        <ul class="nav-menu">
+                            <li class="nav-item active" onclick="showSection('home-cliente')">
+                                <i class="nav-icon fas fa-home"></i>
+                                <span class="nav-text">Dashboard</span>
+                                <div class="nav-indicator"></div>
+                            </li>
+                            <li class="nav-item" onclick="showSection('agendar-cliente')">
+                                <i class="nav-icon fas fa-plus-circle"></i>
+                                <span class="nav-text">Novo Agendamento</span>
+                                <div class="nav-indicator"></div>
+                            </li>
+                            <li class="nav-item" onclick="showSection('agendamentos-cliente')">
+                                <i class="nav-icon fas fa-calendar-alt"></i>
+                                <span class="nav-text">Meus Agendamentos</span>
+                                <span class="nav-badge">2</span>
+                                <div class="nav-indicator"></div>
+                            </li>
+                            <li class="nav-item" onclick="showSection('historico-cliente')">
+                                <i class="nav-icon fas fa-history"></i>
+                                <span class="nav-text">Histórico</span>
+                                <div class="nav-indicator"></div>
+                            </li>
+                        </ul>
                     </div>
+                    <div class="nav-section">
+                        <h3 class="nav-title">Conta</h3>
+                        <ul class="nav-menu">
+                            <li class="nav-item" onclick="showSection('perfil-cliente')">
+                                <i class="nav-icon fas fa-user"></i>
+                                <span class="nav-text">Meu Perfil</span>
+                                <div class="nav-indicator"></div>
+                            </li>
+                            <li class="nav-item" onclick="showSection('favoritos-cliente')">
+                                <i class="nav-icon fas fa-heart"></i>
+                                <span class="nav-text">Favoritos</span>
+                                <div class="nav-indicator"></div>
+                            </li>
+                        </ul>
+                    </div>
+                </nav>
+            </aside>
+
+            <!-- Conteúdo principal -->
+            <main class="app-main">
+                <!-- Dashboard Home -->
+                <div id="home-cliente" class="content-section active">
+                    <!-- Cards de estatísticas -->
+                    <div class="stats-grid">
+                        <div class="stat-card primary">
+                            <div class="stat-icon">
+                                <i class="fas fa-calendar-check"></i>
+                            </div>
+                            <div class="stat-content">
+                                <h3 class="stat-number">2</h3>
+                                <p class="stat-label">Próximos Agendamentos</p>
+                                <span class="stat-trend positive">
+                                    <i class="fas fa-arrow-up"></i> +1 esta semana
+                                </span>
+                            </div>
+                        </div>
+                        
+                        <div class="stat-card success">
+                            <div class="stat-icon">
+                                <i class="fas fa-check-circle"></i>
+                            </div>
+                            <div class="stat-content">
+                                <h3 class="stat-number">12</h3>
+                                <p class="stat-label">Serviços Concluídos</p>
+                                <span class="stat-trend positive">
+                                    <i class="fas fa-arrow-up"></i> +3 este mês
+                                </span>
+                            </div>
+                        </div>
+                        
+                        <div class="stat-card warning">
+                            <div class="stat-icon">
+                                <i class="fas fa-star"></i>
+                            </div>
+                            <div class="stat-content">
+                                <h3 class="stat-number">4.9</h3>
+                                <p class="stat-label">Avaliação Média</p>
+                                <span class="stat-trend neutral">
+                                    <i class="fas fa-minus"></i> Estável
+                                </span>
+                            </div>
+                        </div>
+                        
+                        <div class="stat-card info">
+                            <div class="stat-icon">
+                                <i class="fas fa-wallet"></i>
+                            </div>
+                            <div class="stat-content">
+                                <h3 class="stat-number">R$ 340</h3>
+                                <p class="stat-label">Gasto Total</p>
+                                <span class="stat-trend neutral">
+                                    <i class="fas fa-calendar"></i> Este mês
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Seção de ações rápidas -->
+                    <div class="quick-actions">
+                        <h2 class="section-title">
+                            <i class="fas fa-bolt"></i>
+                            Ações Rápidas
+                        </h2>
+                        <div class="actions-grid">
+                            <button class="action-card primary" onclick="showAgendamento()">
+                                <div class="action-icon">
+                                    <i class="fas fa-plus"></i>
+                                </div>
+                                <div class="action-content">
+                                    <h3>Novo Agendamento</h3>
+                                    <p>Agende seu próximo corte</p>
+                                </div>
+                                <div class="action-arrow">
+                                    <i class="fas fa-arrow-right"></i>
+                                </div>
+                            </button>
+                            
+                            <button class="action-card secondary" onclick="showSection('agendamentos-cliente')">
+                                <div class="action-icon">
+                                    <i class="fas fa-calendar"></i>
+                                </div>
+                                <div class="action-content">
+                                    <h3>Ver Agendamentos</h3>
+                                    <p>Gerencie seus compromissos</p>
+                                </div>
+                                <div class="action-arrow">
+                                    <i class="fas fa-arrow-right"></i>
+                                </div>
+                            </button>
+                            
+                            <button class="action-card tertiary" onclick="showSection('historico-cliente')">
+                                <div class="action-icon">
+                                    <i class="fas fa-history"></i>
+                                </div>
+                                <div class="action-content">
+                                    <h3>Histórico</h3>
+                                    <p>Veja serviços anteriores</p>
+                                </div>
+                                <div class="action-arrow">
+                                    <i class="fas fa-arrow-right"></i>
+                                </div>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Próximos agendamentos -->
+                    <div class="upcoming-appointments">
+                        <h2 class="section-title">
+                            <i class="fas fa-clock"></i>
+                            Próximos Agendamentos
+                        </h2>
+                        <div class="appointments-list" id="upcoming-appointments-list">
+                            <div class="appointment-card featured">
+                                <div class="appointment-time">
+                                    <div class="time-day">Amanhã</div>
+                                    <div class="time-hour">14:00</div>
+                                </div>
+                                <div class="appointment-details">
+                                    <h3>Corte + Barba</h3>
+                                    <p class="barber-name">
+                                        <i class="fas fa-user"></i>
+                                        Carlos Mendes
+                                    </p>
+                                    <p class="appointment-location">
+                                        <i class="fas fa-map-marker-alt"></i>
+                                        Elite Barber - Centro
+                                    </p>
+                                </div>
+                                <div class="appointment-actions">
+                                    <button class="btn-small primary">
+                                        <i class="fas fa-directions"></i>
+                                    </button>
+                                    <button class="btn-small secondary">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                </div>
+                                <div class="appointment-status confirmed">
+                                    <i class="fas fa-check-circle"></i>
+                                    Confirmado
+                                </div>
+                            </div>
+                            
+                            <div class="appointment-card">
+                                <div class="appointment-time">
+                                    <div class="time-day">Sex, 22</div>
+                                    <div class="time-hour">16:30</div>
+                                </div>
+                                <div class="appointment-details">
+                                    <h3>Corte Simples</h3>
+                                    <p class="barber-name">
+                                        <i class="fas fa-user"></i>
+                                        Roberto Silva
+                                    </p>
+                                    <p class="appointment-location">
+                                        <i class="fas fa-map-marker-alt"></i>
+                                        Elite Barber - Centro
+                                    </p>
+                                </div>
+                                <div class="appointment-actions">
+                                    <button class="btn-small primary">
+                                        <i class="fas fa-directions"></i>
+                                    </button>
+                                    <button class="btn-small secondary">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                </div>
+                                <div class="appointment-status pending">
+                                    <i class="fas fa-clock"></i>
+                                    Pendente
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Barbeiros favoritos -->
+                    <div class="favorite-barbers">
+                        <h2 class="section-title">
+                            <i class="fas fa-star"></i>
+                            Seus Barbeiros Favoritos
+                        </h2>
+                        <div class="barbers-grid" id="favorite-barbers-list">
+                            <div class="barber-card premium">
+                                <div class="barber-avatar">
+                                    <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=80&h=80&fit=crop&crop=face" alt="Carlos Mendes">
+                                    <div class="online-status online"></div>
+                                </div>
+                                <div class="barber-info">
+                                    <h3>Carlos Mendes</h3>
+                                    <div class="barber-rating">
+                                        <div class="stars">
+                                            <i class="fas fa-star"></i>
+                                            <i class="fas fa-star"></i>
+                                            <i class="fas fa-star"></i>
+                                            <i class="fas fa-star"></i>
+                                            <i class="fas fa-star"></i>
+                                        </div>
+                                        <span class="rating-value">4.9</span>
+                                    </div>
+                                    <p class="barber-specialty">Especialista em Corte Clássico</p>
+                                    <div class="barber-price">A partir de <strong>R$ 35</strong></div>
+                                </div>
+                                <div class="barber-actions">
+                                    <button class="btn-small primary" onclick="agendarComBarbeiro(1)">
+                                        <i class="fas fa-calendar-plus"></i>
+                                        Agendar
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <div class="barber-card">
+                                <div class="barber-avatar">
+                                    <img src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=80&h=80&fit=crop&crop=face" alt="Roberto Silva">
+                                    <div class="online-status offline"></div>
+                                </div>
+                                <div class="barber-info">
+                                    <h3>Roberto Silva</h3>
+                                    <div class="barber-rating">
+                                        <div class="stars">
+                                            <i class="fas fa-star"></i>
+                                            <i class="fas fa-star"></i>
+                                            <i class="fas fa-star"></i>
+                                            <i class="fas fa-star"></i>
+                                            <i class="fas fa-star-half-alt"></i>
+                                        </div>
+                                        <span class="rating-value">4.8</span>
+                                    </div>
+                                    <p class="barber-specialty">Expert em Degradê</p>
+                                    <div class="barber-price">A partir de <strong>R$ 40</strong></div>
+                                </div>
+                                <div class="barber-actions">
+                                    <button class="btn-small primary" onclick="agendarComBarbeiro(2)">
+                                        <i class="fas fa-calendar-plus"></i>
+                                        Agendar
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
 
                     <div class="services-showcase">
                         <h3>Serviços em Destaque</h3>

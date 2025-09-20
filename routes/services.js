@@ -7,6 +7,7 @@ const { asyncHandler } = require('../middleware/errorHandler');
 
 // Rotas públicas
 router.get('/', validatePagination, asyncHandler(serviceController.getServices));
+router.get('/categories', asyncHandler(serviceController.getServiceCategories));
 router.get('/:id', validateUserId, asyncHandler(serviceController.getServiceById));
 
 // Rotas protegidas (apenas admin)

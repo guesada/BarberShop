@@ -10,8 +10,8 @@ const createTables = async () => {
     connection = await mysql.createConnection({
       host: process.env.DB_HOST || 'localhost',
       user: process.env.DB_USER || 'root',
-      password: process.env.DB_PASSWORD || '',
-      multipleStatements: true
+      password: process.env.DB_PASSWORD || '2051',
+      charset: 'utf8mb4'
     });
 
     logger.info('Conectado ao MySQL para migração');
@@ -68,14 +68,14 @@ const createTables = async () => {
     `;
 
     // Tabela de serviços
-    const createServicesTable = `
+    await connection.execute(`
       CREATE TABLE IF NOT EXISTS services (
         id INT AUTO_INCREMENT PRIMARY KEY,
         name VARCHAR(100) NOT NULL,
         description TEXT,
-        price DECIMAL(10,2) NOT NULL,
         duration INT NOT NULL COMMENT 'Duração em minutos',
-        category VARCHAR(50),
+        price DECIMAL(10,2) NOT NULL,
+        category ENUM('corte', 'barba', 'combo', 'tratamento') DEFAULT 'corte',
         is_active BOOLEAN DEFAULT TRUE,
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
@@ -83,40 +83,38 @@ const createTables = async () => {
         INDEX idx_category (category),
         INDEX idx_is_active (is_active),
         INDEX idx_price (price)
-      ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-    `;
+      ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
+    `);
 
     // Tabela de agendamentos
-    const createAppointmentsTable = `
+    await connection.execute(`
       CREATE TABLE IF NOT EXISTS appointments (
         id INT AUTO_INCREMENT PRIMARY KEY,
-        client_id INT NOT NULL,
+        user_id INT NOT NULL,
         barber_id INT NOT NULL,
         service_id INT NOT NULL,
         appointment_date DATE NOT NULL,
         appointment_time TIME NOT NULL,
-        status ENUM('agendado', 'confirmado', 'em_andamento', 'concluido', 'cancelado') DEFAULT 'agendado',
-        total_price DECIMAL(10,2) NOT NULL,
+        status ENUM('pending', 'confirmed', 'completed', 'cancelled') DEFAULT 'pending',
         notes TEXT,
+        total_price DECIMAL(10,2),
+        reminder_sent BOOLEAN DEFAULT FALSE,
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
         
-        FOREIGN KEY (client_id) REFERENCES users(id) ON DELETE CASCADE,
+        FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
         FOREIGN KEY (barber_id) REFERENCES users(id) ON DELETE CASCADE,
         FOREIGN KEY (service_id) REFERENCES services(id) ON DELETE CASCADE,
-        
-        INDEX idx_client_id (client_id),
-        INDEX idx_barber_id (barber_id),
         INDEX idx_appointment_date (appointment_date),
+        INDEX idx_user_id (user_id),
+        INDEX idx_barber_id (barber_id),
         INDEX idx_status (status),
-        INDEX idx_appointment_datetime (appointment_date, appointment_time),
-        
-        UNIQUE KEY unique_appointment (barber_id, appointment_date, appointment_time)
-      ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-    `;
+        INDEX idx_reminder_sent (reminder_sent)
+      ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
+    `);
 
     // Tabela de avaliações
-    const createReviewsTable = `
+    await connection.execute(`
       CREATE TABLE IF NOT EXISTS reviews (
         id INT AUTO_INCREMENT PRIMARY KEY,
         appointment_id INT NOT NULL,
@@ -130,17 +128,16 @@ const createTables = async () => {
         FOREIGN KEY (appointment_id) REFERENCES appointments(id) ON DELETE CASCADE,
         FOREIGN KEY (client_id) REFERENCES users(id) ON DELETE CASCADE,
         FOREIGN KEY (barber_id) REFERENCES users(id) ON DELETE CASCADE,
-        
+        INDEX idx_appointment_id (appointment_id),
+        INDEX idx_client_id (client_id),
         INDEX idx_barber_id (barber_id),
         INDEX idx_rating (rating),
-        INDEX idx_created_at (created_at),
-        
-        UNIQUE KEY unique_review (appointment_id)
-      ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-    `;
+        UNIQUE KEY unique_review (appointment_id, client_id)
+      ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
+    `);
 
     // Tabela de tokens de reset de senha
-    const createPasswordResetTokensTable = `
+    await connection.execute(`
       CREATE TABLE IF NOT EXISTS password_reset_tokens (
         id INT AUTO_INCREMENT PRIMARY KEY,
         user_id INT NOT NULL,
@@ -150,26 +147,23 @@ const createTables = async () => {
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         
         FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+        INDEX idx_user_id (user_id),
         INDEX idx_token (token),
-        INDEX idx_expires_at (expires_at),
-        INDEX idx_user_id (user_id)
-      ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-    `;
+        INDEX idx_expires_at (expires_at)
+      ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
+    `);
 
-    // Executar as migrações
-    const tables = [
-      { name: 'users', sql: createUsersTable },
-      { name: 'barbers', sql: createBarbersTable },
-      { name: 'services', sql: createServicesTable },
-      { name: 'appointments', sql: createAppointmentsTable },
-      { name: 'reviews', sql: createReviewsTable },
-      { name: 'password_reset_tokens', sql: createPasswordResetTokensTable }
-    ];
+    // Inserir dados iniciais dos serviços
+    await connection.execute(`
+      INSERT IGNORE INTO services (id, name, description, duration, price, category) VALUES
+      (1, 'Corte Clássico', 'Corte tradicional com acabamento profissional', 30, 35.00, 'corte'),
+      (2, 'Barba Completa', 'Aparar e modelar barba com produtos premium', 20, 25.00, 'barba'),
+      (3, 'Corte + Barba', 'Combo completo: corte e barba', 45, 45.00, 'combo'),
+      (4, 'Bigode', 'Aparar e modelar bigode', 15, 15.00, 'barba'),
+      (5, 'Tratamento Capilar', 'Hidratação e tratamento do couro cabeludo', 40, 60.00, 'tratamento')
+    `);
 
-    for (const table of tables) {
-      await connection.execute(table.sql);
-      logger.info(`Tabela '${table.name}' criada/atualizada com sucesso`);
-    }
+    logger.info('✅ Dados iniciais dos serviços inseridos');
 
     logger.info('Migração concluída com sucesso!');
 
