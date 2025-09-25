@@ -1,0 +1,995 @@
+/**
+ * =====================================================================================
+ * ELITE BARBER SHOP - DESIGN MAGNIFICO E ESTRONDOSO
+ * CSS com glows, gradientes, animações e efeitos espetaculares
+ * =====================================================================================
+ */
+
+/* =====================================================================================
+   RESET E VARIÁVEIS GLOBAIS
+   ===================================================================================== */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+:root {
+    /* Cores Profissionais */
+    --primary-gold: #D4AF37;
+    --secondary-gold: #B8860B;
+    --accent-gold: #FFD700;
+    --primary-black: #0A0A0A;
+    --secondary-black: #1A1A1A;
+    --tertiary-black: #2A2A2A;
+    --text-white: #FFFFFF;
+    --text-gray: #CCCCCC;
+    --text-light-gray: #999999;
+    
+    /* Gradientes Profissionais */
+    --gradient-gold: linear-gradient(135deg, #D4AF37, #B8860B);
+    --gradient-black: linear-gradient(135deg, #0A0A0A, #1A1A1A);
+    --gradient-dark: linear-gradient(135deg, #1A1A1A, #2A2A2A);
+    
+    /* Sombras Elegantes */
+    --shadow-soft: 0 4px 20px rgba(0, 0, 0, 0.3);
+    --shadow-medium: 0 8px 30px rgba(0, 0, 0, 0.4);
+    --shadow-strong: 0 12px 40px rgba(0, 0, 0, 0.5);
+    --shadow-gold: 0 4px 20px rgba(212, 175, 55, 0.2);
+    
+    /* Transições Profissionais */
+    --transition-fast: all 0.2s ease;
+    --transition-smooth: all 0.3s ease;
+    --transition-elegant: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* =====================================================================================
+   BODY E ESTRUTURA GLOBAL
+   ===================================================================================== */
+
+body {
+    font-family: 'Playfair Display', 'Georgia', serif;
+    background: var(--gradient-black);
+    color: var(--text-white);
+    overflow-x: hidden;
+    position: relative;
+    min-height: 100vh;
+    font-weight: 400;
+}
+
+/* Textura Sutil de Fundo */
+body::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: 
+        radial-gradient(circle at 20% 20%, rgba(212, 175, 55, 0.03) 0%, transparent 50%),
+        radial-gradient(circle at 80% 80%, rgba(212, 175, 55, 0.02) 0%, transparent 50%);
+    pointer-events: none;
+    z-index: -1;
+}
+
+/* =====================================================================================
+   TELA DE SELEÇÃO DE USUÁRIO - MAGNIFICO
+   ===================================================================================== */
+
+.hero-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    padding: 2rem;
+    position: relative;
+}
+
+.hero-header {
+    text-align: center;
+    margin-bottom: 4rem;
+    animation: heroEntrance 1s var(--transition-elegant);
+}
+
+@keyframes heroEntrance {
+    0% { opacity: 0; transform: translateY(-30px); }
+    100% { opacity: 1; transform: translateY(0); }
+}
+
+.hero-icon {
+    font-size: 4rem;
+    color: var(--primary-gold);
+    margin-bottom: 1.5rem;
+    position: relative;
+}
+
+.hero-icon::before {
+    content: '✂';
+    font-size: 4rem;
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--gradient-gold);
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.hero-title {
+    font-size: 3.5rem;
+    font-weight: 700;
+    color: var(--text-white);
+    margin-bottom: 0.5rem;
+    letter-spacing: -1px;
+    font-family: 'Playfair Display', serif;
+}
+
+.hero-title::after {
+    content: '';
+    display: block;
+    width: 100px;
+    height: 3px;
+    background: var(--gradient-gold);
+    margin: 1rem auto;
+}
+
+.hero-subtitle {
+    font-size: 1.2rem;
+    color: var(--text-gray);
+    font-weight: 400;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    font-family: 'Inter', sans-serif;
+}
+
+/* =====================================================================================
+   CARDS DE SELEÇÃO - ESTRONDOSOS
+   ===================================================================================== */
+
+.selection-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 3rem;
+    max-width: 800px;
+    width: 100%;
+}
+
+.user-card {
+    background: var(--secondary-black);
+    border: 2px solid var(--tertiary-black);
+    border-radius: 12px;
+    padding: 3rem 2rem;
+    text-align: center;
+    cursor: pointer;
+    position: relative;
+    transition: var(--transition-elegant);
+    box-shadow: var(--shadow-soft);
+}
+
+.user-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: var(--gradient-gold);
+    border-radius: 12px;
+    opacity: 0;
+    transition: var(--transition-smooth);
+    z-index: -1;
+}
+
+.user-card:hover::before {
+    opacity: 0.1;
+}
+
+.user-card:hover {
+    transform: translateY(-8px);
+    box-shadow: var(--shadow-medium);
+    border-color: var(--primary-gold);
+}
+
+.user-card i {
+    font-size: 3.5rem;
+    margin-bottom: 1.5rem;
+    color: var(--primary-gold);
+    transition: var(--transition-smooth);
+}
+
+.user-card:hover i {
+    transform: scale(1.1);
+    color: var(--accent-gold);
+}
+
+.user-card h3 {
+    font-size: 1.8rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+    color: var(--text-white);
+    font-family: 'Playfair Display', serif;
+}
+
+.user-card p {
+    font-size: 1rem;
+    color: var(--text-gray);
+    line-height: 1.5;
+    font-family: 'Inter', sans-serif;
+}
+
+/* =====================================================================================
+   FORMULÁRIOS - ESPLÊNDIDOS
+   ===================================================================================== */
+
+.login-container {
+    max-width: 450px;
+    margin: 2rem auto;
+    padding: 3rem;
+    background: var(--secondary-black);
+    border-radius: 12px;
+    border: 2px solid var(--tertiary-black);
+    box-shadow: var(--shadow-medium);
+    animation: formEntrance 0.6s var(--transition-elegant);
+}
+
+@keyframes formEntrance {
+    0% { opacity: 0; transform: translateY(30px); }
+    100% { opacity: 1; transform: translateY(0); }
+}
+
+.login-header {
+    text-align: center;
+    margin-bottom: 2rem;
+    position: relative;
+}
+
+.btn-back {
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    background: var(--tertiary-black);
+    border: 2px solid var(--primary-gold);
+    border-radius: 8px;
+    width: 45px;
+    height: 45px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: var(--transition-smooth);
+    color: var(--primary-gold);
+}
+
+.btn-back:hover {
+    background: var(--primary-gold);
+    color: var(--primary-black);
+    transform: translateY(-50%) scale(1.05);
+}
+
+.login-header h2 {
+    font-size: 2.2rem;
+    font-weight: 600;
+    color: var(--text-white);
+    margin-bottom: 0.5rem;
+    font-family: 'Playfair Display', serif;
+}
+
+.login-header h2::after {
+    content: '';
+    display: block;
+    width: 60px;
+    height: 2px;
+    background: var(--gradient-gold);
+    margin: 1rem auto 0;
+}
+
+/* =====================================================================================
+   INPUTS MAGNIFICOS
+   ===================================================================================== */
+
+.form-group {
+    margin-bottom: 2rem;
+    position: relative;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.9);
+    font-size: 1.1rem;
+}
+
+.form-group input {
+    width: 100%;
+    padding: 1rem 1.2rem;
+    background: var(--tertiary-black);
+    border: 2px solid var(--tertiary-black);
+    border-radius: 8px;
+    color: var(--text-white);
+    font-size: 1rem;
+    transition: var(--transition-smooth);
+    font-family: 'Inter', sans-serif;
+}
+
+.form-group input:focus {
+    outline: none;
+    border-color: var(--primary-gold);
+    background: var(--primary-black);
+    box-shadow: var(--shadow-gold);
+}
+
+.form-group input::placeholder {
+    color: var(--text-light-gray);
+}
+
+/* =====================================================================================
+   BOTÕES ESPETACULARES
+   ===================================================================================== */
+
+.btn {
+    padding: 1rem 2rem;
+    border: 2px solid var(--primary-gold);
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: var(--transition-smooth);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-family: 'Inter', sans-serif;
+}
+
+.btn--primary {
+    background: var(--gradient-gold);
+    color: var(--primary-black);
+    box-shadow: var(--shadow-gold);
+}
+
+.btn--primary:hover {
+    background: var(--accent-gold);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-medium);
+}
+
+.btn--full-width {
+    width: 100%;
+}
+
+/* =====================================================================================
+   DASHBOARD - PROFISSIONAL
+   ===================================================================================== */
+
+.dashboard-header {
+    background: var(--secondary-black);
+    padding: 1.5rem 2rem;
+    border-bottom: 2px solid var(--primary-gold);
+    box-shadow: var(--shadow-soft);
+}
+
+.header-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.header-left h1 {
+    font-size: 1.8rem;
+    font-weight: 600;
+    color: var(--text-white);
+    margin-bottom: 0.5rem;
+    font-family: 'Playfair Display', serif;
+}
+
+.header-left h1::after {
+    content: '';
+    display: block;
+    width: 50px;
+    height: 2px;
+    background: var(--gradient-gold);
+    margin-top: 0.5rem;
+}
+
+.header-left p {
+    color: var(--text-gray);
+    font-size: 0.9rem;
+    font-family: 'Inter', sans-serif;
+}
+
+.header-right {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+}
+
+.header-btn {
+    background: var(--tertiary-black);
+    border: 2px solid var(--tertiary-black);
+    border-radius: 8px;
+    width: 45px;
+    height: 45px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: var(--transition-smooth);
+    color: var(--text-gray);
+    position: relative;
+}
+
+.header-btn:hover {
+    background: var(--primary-gold);
+    border-color: var(--primary-gold);
+    color: var(--primary-black);
+    transform: scale(1.05);
+}
+
+.header-btn.theme-toggle:hover {
+    background: var(--secondary-gold);
+}
+
+.header-btn.logout-btn:hover {
+    background: #dc3545;
+    border-color: #dc3545;
+    color: white;
+}
+
+/* Dashboard Main Content */
+.dashboard-main {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem;
+    display: grid;
+    grid-template-columns: 250px 1fr;
+    gap: 2rem;
+    min-height: calc(100vh - 120px);
+}
+
+/* Sidebar Navigation */
+.dashboard-sidebar {
+    background: var(--secondary-black);
+    border-radius: 12px;
+    padding: 2rem;
+    height: fit-content;
+    border: 2px solid var(--tertiary-black);
+    box-shadow: var(--shadow-soft);
+}
+
+.nav-section {
+    margin-bottom: 2rem;
+}
+
+.nav-title {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--primary-gold);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 1rem;
+    font-family: 'Inter', sans-serif;
+}
+
+.nav-menu {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.nav-item {
+    padding: 0.8rem 1rem;
+    margin-bottom: 0.5rem;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: var(--transition-smooth);
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    position: relative;
+}
+
+.nav-item:hover {
+    background: var(--tertiary-black);
+    transform: translateX(5px);
+}
+
+.nav-item.active {
+    background: var(--primary-gold);
+    color: var(--primary-black);
+}
+
+.nav-item.active .nav-icon {
+    color: var(--primary-black);
+}
+
+.nav-icon {
+    font-size: 1.1rem;
+    color: var(--primary-gold);
+    width: 20px;
+    text-align: center;
+}
+
+.nav-text {
+    font-size: 0.95rem;
+    font-weight: 500;
+    color: var(--text-white);
+    font-family: 'Inter', sans-serif;
+}
+
+.nav-item.active .nav-text {
+    color: var(--primary-black);
+    font-weight: 600;
+}
+
+.nav-badge {
+    background: var(--primary-gold);
+    color: var(--primary-black);
+    font-size: 0.7rem;
+    padding: 0.2rem 0.5rem;
+    border-radius: 10px;
+    font-weight: 600;
+    margin-left: auto;
+}
+
+/* Dashboard Content Area */
+.dashboard-content {
+    background: var(--secondary-black);
+    border-radius: 12px;
+    padding: 2rem;
+    border: 2px solid var(--tertiary-black);
+    box-shadow: var(--shadow-soft);
+}
+
+.content-section {
+    display: none;
+}
+
+.content-section.active {
+    display: block;
+}
+
+.section-title {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: var(--text-white);
+    margin-bottom: 1.5rem;
+    font-family: 'Playfair Display', serif;
+}
+
+.section-title::after {
+    content: '';
+    display: block;
+    width: 40px;
+    height: 2px;
+    background: var(--gradient-gold);
+    margin-top: 0.5rem;
+}
+
+/* =====================================================================================
+   BARBER CARDS - PROFISSIONAIS
+   ===================================================================================== */
+
+.barber-card {
+    background: var(--tertiary-black);
+    border-radius: 12px;
+    padding: 1.5rem;
+    border: 2px solid var(--tertiary-black);
+    transition: var(--transition-elegant);
+    position: relative;
+    box-shadow: var(--shadow-soft);
+}
+
+.barber-card:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--shadow-medium);
+    border-color: var(--primary-gold);
+}
+
+.barber-card.premium {
+    border-color: var(--primary-gold);
+}
+
+.barber-card.premium::before {
+    content: '★';
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    color: var(--primary-gold);
+    font-size: 1.2rem;
+}
+
+.barber-avatar {
+    position: relative;
+    width: 80px;
+    height: 80px;
+    margin: 0 auto 1.5rem;
+}
+
+.barber-avatar img {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid var(--primary-gold);
+    box-shadow: var(--shadow-gold);
+}
+
+.online-status {
+    position: absolute;
+    bottom: 5px;
+    right: 5px;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    border: 2px solid var(--secondary-black);
+}
+
+.online-status.online {
+    background: #10b981;
+    box-shadow: 0 0 8px rgba(16, 185, 129, 0.5);
+}
+
+.online-status.offline {
+    background: #ef4444;
+}
+
+.barber-info h3 {
+    font-size: 1.3rem;
+    font-weight: 600;
+    color: var(--text-white);
+    margin-bottom: 0.8rem;
+    text-align: center;
+    font-family: 'Playfair Display', serif;
+}
+
+.barber-rating {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    margin-bottom: 0.8rem;
+}
+
+.stars {
+    color: var(--primary-gold);
+}
+
+.rating-value {
+    font-weight: 600;
+    color: var(--primary-gold);
+    font-size: 0.9rem;
+}
+
+.barber-specialty {
+    text-align: center;
+    color: var(--text-gray);
+    margin-bottom: 0.8rem;
+    font-size: 0.9rem;
+    font-family: 'Inter', sans-serif;
+}
+
+.barber-price {
+    text-align: center;
+    font-size: 1rem;
+    color: var(--text-white);
+    margin-bottom: 1.2rem;
+    font-weight: 500;
+}
+
+.barber-actions {
+    text-align: center;
+}
+
+.btn-small {
+    padding: 0.6rem 1.2rem;
+    font-size: 0.85rem;
+    border-radius: 8px;
+    border: 2px solid var(--primary-gold);
+    cursor: pointer;
+    transition: var(--transition-smooth);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    font-family: 'Inter', sans-serif;
+}
+
+.btn-small.primary {
+    background: var(--gradient-gold);
+    color: var(--primary-black);
+}
+
+.btn-small.primary:hover {
+    background: var(--accent-gold);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-medium);
+}
+
+/* =====================================================================================
+   ELEMENTOS ADICIONAIS DO DASHBOARD
+   ===================================================================================== */
+
+/* Grid de Cards */
+.cards-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+/* Lista de Agendamentos */
+.appointments-list, .favorite-barbers-list {
+    display: grid;
+    gap: 1rem;
+}
+
+.appointment-card {
+    background: var(--tertiary-black);
+    border: 2px solid var(--tertiary-black);
+    border-radius: 12px;
+    padding: 1.5rem;
+    transition: var(--transition-smooth);
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.appointment-card:hover {
+    border-color: var(--primary-gold);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-soft);
+}
+
+.appointment-card.featured {
+    border-color: var(--primary-gold);
+}
+
+.appointment-time {
+    text-align: center;
+    min-width: 80px;
+}
+
+.time-day {
+    font-size: 0.8rem;
+    color: var(--text-gray);
+    margin-bottom: 0.2rem;
+    font-family: 'Inter', sans-serif;
+}
+
+.time-hour {
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: var(--primary-gold);
+    font-family: 'Inter', sans-serif;
+}
+
+.appointment-details {
+    flex: 1;
+}
+
+.appointment-details h3 {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--text-white);
+    margin-bottom: 0.5rem;
+    font-family: 'Playfair Display', serif;
+}
+
+.appointment-details p {
+    font-size: 0.9rem;
+    color: var(--text-gray);
+    margin-bottom: 0.3rem;
+    font-family: 'Inter', sans-serif;
+}
+
+.appointment-status {
+    padding: 0.3rem 0.8rem;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.appointment-status.confirmed {
+    background: rgba(16, 185, 129, 0.2);
+    color: #10b981;
+    border: 1px solid #10b981;
+}
+
+.appointment-status.pending {
+    background: rgba(245, 158, 11, 0.2);
+    color: #f59e0b;
+    border: 1px solid #f59e0b;
+}
+
+/* Demo Banner */
+.demo-banner {
+    background: var(--secondary-black);
+    border-bottom: 2px solid var(--primary-gold);
+    padding: 0.8rem 1rem;
+    text-align: center;
+    position: relative;
+}
+
+.demo-content {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.8rem;
+    color: var(--text-white);
+    font-size: 0.9rem;
+    font-family: 'Inter', sans-serif;
+}
+
+.demo-close {
+    position: absolute;
+    right: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    color: var(--text-gray);
+    cursor: pointer;
+    font-size: 1.2rem;
+    transition: var(--transition-fast);
+}
+
+.demo-close:hover {
+    color: var(--primary-gold);
+}
+
+/* Links de Login/Registro */
+.login-footer {
+    text-align: center;
+    margin-top: 1.5rem;
+}
+
+.login-footer a {
+    color: var(--primary-gold);
+    text-decoration: none;
+    font-size: 0.9rem;
+    font-family: 'Inter', sans-serif;
+    transition: var(--transition-fast);
+}
+
+.login-footer a:hover {
+    color: var(--accent-gold);
+    text-decoration: underline;
+}
+
+/* Labels dos Formulários */
+.form-label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+    color: var(--text-white);
+    font-size: 0.95rem;
+    font-family: 'Inter', sans-serif;
+}
+
+/* =====================================================================================
+   RESPONSIVIDADE PROFISSIONAL
+   ===================================================================================== */
+
+@media (max-width: 768px) {
+    .dashboard-main {
+        grid-template-columns: 1fr;
+        padding: 1rem;
+    }
+    
+    .dashboard-sidebar {
+        order: 2;
+    }
+    
+    .dashboard-content {
+        order: 1;
+    }
+    
+    .hero-title {
+        font-size: 2.5rem;
+    }
+    
+    .selection-cards {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+    }
+    
+    .login-container {
+        margin: 1rem;
+        padding: 2rem;
+    }
+    
+    .cards-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* =====================================================================================
+   TEMA ESCURO PROFISSIONAL
+   ===================================================================================== */
+
+.dark-theme {
+    --primary-black: #000000;
+    --secondary-black: #0a0a0a;
+    --tertiary-black: #1a1a1a;
+}
+
+/* =====================================================================================
+   TELAS E TRANSIÇÕES
+   ===================================================================================== */
+
+.screen {
+    position: relative;
+    min-height: 100vh;
+    display: none;
+    animation: screenTransition 0.4s ease-out;
+}
+
+.screen.active {
+    display: block;
+}
+
+@keyframes screenTransition {
+    0% { opacity: 0; transform: translateY(20px); }
+    100% { opacity: 1; transform: translateY(0); }
+}
+
+/* =====================================================================================
+   FINALIZAÇÃO DO CSS PROFISSIONAL
+   ===================================================================================== */
+
+/* Garantir que todos os elementos tenham a fonte correta */
+* {
+    font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    font-family: 'Playfair Display', 'Georgia', serif;
+}
+
+/* Scroll suave */
+html {
+    scroll-behavior: smooth;
+}
+
+/* Seleção de texto personalizada */
+::selection {
+    background: var(--primary-gold);
+    color: var(--primary-black);
+}
+
+::-moz-selection {
+    background: var(--primary-gold);
+    color: var(--primary-black);
+}
+
+/* Focus outline personalizado */
+*:focus {
+    outline: 2px solid var(--primary-gold);
+    outline-offset: 2px;
+}
+
+/* Scrollbar personalizada */
+::-webkit-scrollbar {
+    width: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--secondary-black);
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--primary-gold);
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--accent-gold);
+}
+
+/* 🏆 DESIGN PROFISSIONAL COMPLETO - ELITE BARBER SHOP */

@@ -2,6 +2,18 @@
   /* Primitive Color Tokens */
   --color-white: rgba(255, 255, 255, 1);
   --color-black: rgba(0, 0, 0, 1);
+  --color-primary-black: rgba(10, 10, 10, 1);
+  --color-secondary-black: rgba(26, 26, 26, 1);
+  --color-tertiary-black: rgba(42, 42, 42, 1);
+  --color-primary-gold: rgba(212, 175, 55, 1);
+  --color-secondary-gold: rgba(184, 134, 11, 1);
+  --color-accent-gold: rgba(255, 215, 0, 1);
+  
+  /* GRADIENTES PROFISSIONAIS */
+  --gradient-gold: linear-gradient(135deg, #D4AF37, #B8860B, #FFD700);
+  --gradient-black: linear-gradient(135deg, #0A0A0A, #1A1A1A, #2A2A2A);
+  --gradient-gold-reverse: linear-gradient(135deg, #FFD700, #D4AF37, #B8860B);
+  --gradient-dark-gold: linear-gradient(135deg, #1A1A1A 0%, #2A2A2A 50%, #D4AF37 100%);
   --color-cream-50: rgba(252, 252, 249, 1);
   --color-cream-100: rgba(255, 255, 253, 1);
   --color-gray-200: rgba(245, 245, 245, 1);
@@ -43,26 +55,26 @@
   --color-bg-7: rgba(236, 72, 153, 0.08); /* Light pink */
   --color-bg-8: rgba(6, 182, 212, 0.08); /* Light cyan */
 
-  /* Semantic Color Tokens (Light Mode) */
-  --color-background: var(--color-cream-50);
-  --color-surface: var(--color-cream-100);
-  --color-text: var(--color-slate-900);
-  --color-text-secondary: var(--color-slate-500);
-  --color-primary: var(--color-teal-500);
-  --color-primary-hover: var(--color-teal-600);
-  --color-primary-active: var(--color-teal-700);
-  --color-secondary: rgba(var(--color-brown-600-rgb), 0.12);
-  --color-secondary-hover: rgba(var(--color-brown-600-rgb), 0.2);
-  --color-secondary-active: rgba(var(--color-brown-600-rgb), 0.25);
-  --color-border: rgba(var(--color-brown-600-rgb), 0.2);
-  --color-btn-primary-text: var(--color-cream-50);
-  --color-card-border: rgba(var(--color-brown-600-rgb), 0.12);
-  --color-card-border-inner: rgba(var(--color-brown-600-rgb), 0.12);
+  /* Semantic Color Tokens (Professional Mode) */
+  --color-background: var(--color-primary-black);
+  --color-surface: var(--color-secondary-black);
+  --color-text: var(--color-white);
+  --color-text-secondary: rgba(204, 204, 204, 1);
+  --color-primary: var(--color-primary-gold);
+  --color-primary-hover: var(--color-secondary-gold);
+  --color-primary-active: var(--color-accent-gold);
+  --color-secondary: var(--color-tertiary-black);
+  --color-secondary-hover: rgba(42, 42, 42, 0.8);
+  --color-secondary-active: rgba(42, 42, 42, 1);
+  --color-border: var(--color-primary-gold);
+  --color-btn-primary-text: var(--color-primary-black);
+  --color-card-border: var(--color-primary-gold);
+  --color-card-border-inner: var(--color-secondary-gold);
   --color-error: var(--color-red-500);
-  --color-success: var(--color-teal-500);
+  --color-success: var(--color-primary-gold);
   --color-warning: var(--color-orange-500);
-  --color-info: var(--color-slate-500);
-  --color-focus-ring: rgba(var(--color-teal-500-rgb), 0.4);
+  --color-info: var(--color-text-secondary);
+  --color-focus-ring: rgba(212, 175, 55, 0.4);
   --color-select-caret: rgba(var(--color-slate-900-rgb), 0.8);
 
   /* Common style patterns */
@@ -80,8 +92,7 @@
   --color-info-rgb: 98, 108, 113;
 
   /* Typography */
-  --font-family-base: "FKGroteskNeue", "Geist", "Inter", -apple-system,
-    BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-family-base: "Georgia", "Times New Roman", "Times", serif;
   --font-family-mono: "Berkeley Mono", ui-monospace, SFMono-Regular, Menlo,
     Monaco, Consolas, monospace;
   --font-size-xs: 11px;
@@ -311,6 +322,10 @@ html {
 body {
   margin: 0;
   padding: 0;
+  background-color: var(--color-primary-black);
+  color: var(--color-text);
+  font-family: 'Georgia', 'Times New Roman', serif;
+  min-height: 100vh;
 }
 
 *,
@@ -413,16 +428,20 @@ pre code {
 }
 
 .btn--primary {
-  background: var(--color-primary);
-  color: var(--color-btn-primary-text);
+  background-color: var(--color-primary-gold);
+  color: var(--color-primary-black);
+  border: 2px solid var(--color-primary-gold);
+  font-weight: 600;
+  transition: all 0.2s ease;
 }
 
 .btn--primary:hover {
-  background: var(--color-primary-hover);
+  background-color: var(--color-secondary-gold);
+  border-color: var(--color-secondary-gold);
 }
 
 .btn--primary:active {
-  background: var(--color-primary-active);
+  background-color: var(--color-accent-gold);
 }
 
 .btn--secondary {
@@ -535,16 +554,15 @@ select.form-control {
 
 /* Card component */
 .card {
-  background-color: var(--color-surface);
+  background-color: var(--color-secondary-black);
   border-radius: var(--radius-lg);
-  border: 1px solid var(--color-card-border);
+  border: 1px solid var(--color-primary-gold);
   box-shadow: var(--shadow-sm);
-  overflow: hidden;
-  transition: box-shadow var(--duration-normal) var(--ease-standard);
+  transition: all var(--duration-fast) var(--ease-standard);
 }
 
 .card:hover {
-  box-shadow: var(--shadow-md);
+  border-color: var(--color-accent-gold);
 }
 
 .card__body {
@@ -743,7 +761,6 @@ select.form-control {
   display: none;
   min-height: 100vh;
 }
-
 .screen.active {
   display: block;
 }
@@ -751,18 +768,13 @@ select.form-control {
 /* Hero Section */
 .hero-container {
   min-height: 100vh;
-  background: linear-gradient(135deg, var(--color-brown-600) 0%, var(--color-slate-900) 100%);
+  background-color: var(--color-primary-black);
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   padding: var(--space-32);
   text-align: center;
-}
-
-.hero-header {
-  margin-bottom: var(--space-32);
-  color: var(--color-cream-100);
 }
 
 .hero-icon {
@@ -776,6 +788,18 @@ select.form-control {
   font-weight: var(--font-weight-bold);
   margin-bottom: var(--space-8);
   letter-spacing: var(--letter-spacing-tight);
+  font-family: 'Georgia', serif;
+}
+
+/* Efeito texto bicolor - primeira palavra preta, segunda dourada */
+.hero-title::before {
+  content: 'Elite ';
+  color: var(--color-white);
+}
+
+.hero-title::after {
+  content: 'Barber';
+  color: var(--color-primary-gold);
 }
 
 .hero-subtitle {
@@ -794,26 +818,30 @@ select.form-control {
 }
 
 .user-card {
-  background: var(--color-surface);
+  background-color: var(--color-secondary-black);
   border-radius: var(--radius-lg);
   padding: var(--space-32);
   text-align: center;
   cursor: pointer;
   transition: all var(--duration-normal) var(--ease-standard);
-  border: 2px solid transparent;
-  box-shadow: var(--shadow-lg);
+  border: 2px solid var(--color-primary-gold);
 }
 
 .user-card:hover {
-  transform: translateY(-4px);
-  border-color: var(--color-teal-300);
-  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
+  border-color: var(--color-accent-gold);
+  background-color: var(--color-tertiary-black);
 }
 
 .user-card i {
   font-size: 2.5rem;
-  color: var(--color-teal-500);
+  color: var(--color-primary-gold);
   margin-bottom: var(--space-16);
+  transition: all 0.3s ease;
+}
+
+.user-card:hover i {
+  color: var(--color-accent-gold);
+  transform: scale(1.1);
 }
 
 .user-card h3 {
@@ -864,6 +892,27 @@ select.form-control {
 .login-header h2 {
   font-size: var(--font-size-3xl);
   color: var(--color-text);
+  font-family: 'Georgia', serif;
+  font-weight: 700;
+}
+
+/* Efeito bicolor para títulos de login */
+.login-header h2[data-title="Login Cliente"]::before {
+  content: 'Login ';
+  color: var(--color-white);
+}
+.login-header h2[data-title="Login Cliente"]::after {
+  content: 'Cliente';
+  color: var(--color-primary-gold);
+}
+
+.login-header h2[data-title="Login Barbeiro"]::before {
+  content: 'Login ';
+  color: var(--color-white);
+}
+.login-header h2[data-title="Login Barbeiro"]::after {
+  content: 'Barbeiro';
+  color: var(--color-primary-gold);
 }
 
 .login-form {
@@ -1392,18 +1441,12 @@ select.form-control {
   display: flex;
   align-items: center;
 }
-
 .stat-icon {
   width: 60px;
   height: 60px;
   background: var(--color-bg-1);
   border-radius: var(--radius-base);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin-right: var(--space-16);
 }
-
 .stat-icon i {
   font-size: 1.5rem;
   color: var(--color-primary);
@@ -2519,23 +2562,97 @@ select.form-control {
   }
   
   .stats-grid {
-    grid-template-columns: repeat(2, 1fr);
-    gap: 1rem;
-  }
-  
-  .actions-grid {
     grid-template-columns: 1fr;
   }
   
-  .appointment-card {
+  .favorites-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .appointments-filters {
+    flex-wrap: wrap;
+  }
+  
+  .history-item {
     flex-direction: column;
     text-align: center;
-    gap: 1rem;
   }
   
-  .barbers-grid {
-    grid-template-columns: 1fr;
+  .barber-actions {
+    flex-direction: column;
   }
+}
+
+/* ===== BOTÕES CLICÁVEIS - CORREÇÃO ===== */
+.nav-item {
+  cursor: pointer !important;
+  pointer-events: auto !important;
+  user-select: none;
+  transition: all 0.3s ease;
+}
+
+.nav-item:hover {
+  background: rgba(212, 175, 55, 0.1);
+  transform: translateX(4px);
+}
+
+.action-card {
+  cursor: pointer !important;
+  pointer-events: auto !important;
+  user-select: none;
+  transition: all 0.3s ease;
+}
+
+.action-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(212, 175, 55, 0.2);
+}
+
+.header-btn {
+  cursor: pointer !important;
+  pointer-events: auto !important;
+  user-select: none;
+}
+
+.btn-small {
+  cursor: pointer !important;
+  pointer-events: auto !important;
+  user-select: none;
+}
+
+.btn-back {
+  cursor: pointer !important;
+  pointer-events: auto !important;
+  user-select: none;
+  transition: all 0.3s ease;
+}
+
+.btn-back:hover {
+  background: rgba(212, 175, 55, 0.1);
+  transform: scale(1.1);
+}
+
+/* Garantir que todos os botões sejam clicáveis */
+button, .btn, .nav-item, .action-card, .header-btn, .btn-small, .btn-back {
+  cursor: pointer !important;
+  pointer-events: auto !important;
+}
+
+/* Remover qualquer bloqueio de clique */
+* {
+  pointer-events: auto;
+}
+
+.screen {
+  pointer-events: auto;
+}
+
+.app-main {
+  pointer-events: auto;
+}
+
+.content-section {
+  pointer-events: auto;
 }
 
 /* ===== TEMA ESCURO ===== */
@@ -2679,4 +2796,110 @@ body.dark-theme .appointment-status.pending {
 body.dark-theme .barber-card.premium {
   border-color: var(--color-teal-400);
   background: linear-gradient(135deg, rgba(33, 128, 141, 0.1), rgba(33, 128, 141, 0.05));
+}
+
+/* ===== DASHBOARD FUNCIONAL ===== */
+.custom-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 1000;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.3s ease;
+}
+
+.custom-modal.show {
+  opacity: 1;
+  visibility: visible;
+}
+
+.modal-backdrop {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.8);
+  cursor: pointer;
+}
+
+.modal-content {
+  position: relative;
+  background: var(--color-secondary-black);
+  border-radius: var(--radius-lg);
+  max-width: 600px;
+  width: 90%;
+  margin: 5% auto;
+  max-height: 80vh;
+  overflow-y: auto;
+  border: 1px solid var(--color-primary-gold);
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--space-20);
+  border-bottom: 1px solid var(--color-primary-gold);
+}
+
+.modal-header h2 {
+  color: var(--color-white);
+  margin: 0;
+  font-family: 'Georgia', serif;
+}
+
+.modal-close {
+  background: none;
+  border: none;
+  color: var(--color-primary-gold);
+  font-size: var(--font-size-lg);
+  cursor: pointer;
+  padding: var(--space-8);
+  border-radius: var(--radius-base);
+  transition: all 0.3s ease;
+}
+
+.modal-close:hover {
+  background: var(--color-tertiary-black);
+}
+
+.modal-body {
+  padding: var(--space-20);
+  color: var(--color-white);
+}
+
+.appointment-item,
+.notification-item,
+.history-item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-16);
+  padding: var(--space-16);
+  background: var(--color-tertiary-black);
+  border-radius: var(--radius-base);
+  margin-bottom: var(--space-12);
+}
+
+.status.confirmed {
+  background: rgba(16, 185, 129, 0.2);
+  color: #10b981;
+  padding: var(--space-4) var(--space-8);
+  border-radius: var(--radius-base);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-medium);
+  text-transform: uppercase;
+}
+
+.status.pending {
+  background: rgba(245, 158, 11, 0.2);
+  color: #f59e0b;
+  padding: var(--space-4) var(--space-8);
+  border-radius: var(--radius-base);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-medium);
+  text-transform: uppercase;
 }

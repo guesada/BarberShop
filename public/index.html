@@ -1,19 +1,22 @@
-<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Elite Barber - Aplicativo Premium</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
 </head>
 <body>
+
     <!-- Tela de Seleção Inicial -->
     <div id="user-selection" class="screen active">
         <div class="hero-container">
             <div class="hero-header">
                 <i class="fas fa-cut hero-icon"></i>
-                <h1 class="hero-title">Elite Barber</h1>
+                <h1 class="hero-title"></h1>
                 <p class="hero-subtitle">Experiência premium em barbearia</p>
             </div>
             <div class="selection-cards">
@@ -38,7 +41,7 @@
                 <button class="btn-back" onclick="goBack()">
                     <i class="fas fa-arrow-left"></i>
                 </button>
-                <h2>Login Cliente</h2>
+                <h2 data-title="Login Cliente"></h2>
             </div>
             <form class="login-form" id="login-cliente-form">
                 <div class="form-group">
@@ -66,7 +69,7 @@
                 <button class="btn-back" onclick="goBack()">
                     <i class="fas fa-arrow-left"></i>
                 </button>
-                <h2>Login Barbeiro</h2>
+                <h2 data-title="Login Barbeiro"></h2>
             </div>
             <form class="login-form" id="login-barbeiro-form">
                 <div class="form-group">
