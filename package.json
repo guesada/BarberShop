@@ -38,7 +38,7 @@
   ],
   "author": {
     "name": "Leo Guesada",
-    "email": "leoguesada08@gmail.com"
+    "email": "leo@example.com"
   },
   "license": "MIT",
   "repository": {
@@ -46,8 +46,8 @@
     "url": "https://github.com/leogu/BarberShop.git"
   },
   "engines": {
-    "node": ">=18.0.0",
-    "npm": ">=9.0.0"
+    "node": ">=16.0.0",
+    "npm": ">=8.0.0"
   },
   "dependencies": {
     "bcryptjs": "^2.4.3",
