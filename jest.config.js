@@ -1,37 +1,28 @@
 module.exports = {
-  // Ambiente de teste
+  preset: 'ts-jest',
   testEnvironment: 'node',
-
-  // Padrão para encontrar arquivos de teste
+  roots: ['<rootDir>/src'],
   testMatch: [
-    '**/tests/**/*.test.js',
-    '**/tests/**/*.spec.js',
-    '**/__tests__/**/*.js'
+    '**/__tests__/**/*.ts',
+    '**/?(*.)+(spec|test).ts'
   ],
-
-  // Diretórios a serem ignorados
-  testPathIgnorePatterns: [
-    '/node_modules/',
-    '/public/',
-    '/logs/'
-  ],
-
-  // Configuração de coverage
-  collectCoverage: false,
+  transform: {
+    '^.+\\.ts$': 'ts-jest',
+  },
   collectCoverageFrom: [
-    'controllers/**/*.js',
-    'middleware/**/*.js',
-    'utils/**/*.js',
-    'routes/**/*.js',
-    '!**/node_modules/**',
-    '!**/tests/**',
-    '!**/coverage/**'
+    'src/**/*.ts',
+    '!src/**/*.d.ts',
+    '!src/**/*.test.ts',
+    '!src/**/*.spec.ts',
+    '!src/server.ts',
+    '!src/scripts/**'
   ],
   coverageDirectory: 'coverage',
   coverageReporters: [
     'text',
     'lcov',
-    'html'
+    'html',
+    'json'
   ],
   coverageThreshold: {
     global: {
@@ -41,19 +32,19 @@ module.exports = {
       statements: 70
     }
   },
-
-  // Setup files
-  setupFilesAfterEnv: ['<rootDir>/tests/setup.js'],
-
-  // Timeout para testes
+  setupFilesAfterEnv: ['<rootDir>/src/__tests__/setup.ts'],
   testTimeout: 10000,
-
-  // Verbose output
   verbose: true,
-
-  // Limpar mocks automaticamente
+  forceExit: true,
   clearMocks: true,
-
-  // Restaurar mocks automaticamente
-  restoreMocks: true
+  resetMocks: true,
+  restoreMocks: true,
+  moduleNameMapping: {
+    '^@/(.*)$': '<rootDir>/src/$1'
+  },
+  globals: {
+    'ts-jest': {
+      tsconfig: 'tsconfig.json'
+    }
+  }
 };

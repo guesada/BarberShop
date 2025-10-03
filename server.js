@@ -1,221 +1,172 @@
-require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 const helmet = require('helmet');
-const compression = require('compression');
 const rateLimit = require('express-rate-limit');
+const compression = require('compression');
 const path = require('path');
+require('dotenv').config();
+// Validate env vars
+require('./src/config/validateEnv')();
 
-// Importar utilitários e middlewares
-const logger = require('./utils/logger');
-const { errorHandler, notFound } = require('./middleware/errorHandler');
+const authRoutes = require('./src/routes/authRoutes');
+const userRoutes = require('./src/routes/userRoutes');
+const barberRoutes = require('./src/routes/barberRoutes');
+const appointmentRoutes = require('./src/routes/appointmentRoutes');
+const serviceRoutes = require('./src/routes/serviceRoutes');
+const notificationRoutes = require('./src/routes/notificationRoutes');
 
-// Importar rotas
-const userRoutes = require('./routes/users');
-const appointmentRoutes = require('./routes/appointments');
-const serviceRoutes = require('./routes/services');
-const barberRoutes = require('./routes/barbers');
-const reviewRoutes = require('./routes/reviews');
+const { errorHandler } = require('./src/middleware/errorHandler');
+const logger = require('./src/utils/logger');
+const morgan = require('morgan');
+const setupSwagger = require('./src/config/swagger');
 
-// Testar conexão com banco
-const pool = require('./config/db');
+// Initialize services
+const EmailService = require('./src/services/EmailService');
+const SchedulerService = require('./src/services/SchedulerService');
 
 const app = express();
+const PORT = process.env.PORT || 3000;
 
-// Configurações de segurança
+// Security middleware
 app.use(helmet({
+  crossOriginEmbedderPolicy: false,
   contentSecurityPolicy: {
     directives: {
       defaultSrc: ["'self'"],
-      styleSrc: ["'self'", "'unsafe-inline'", "https://cdnjs.cloudflare.com"],
-      scriptSrc: ["'self'", "'unsafe-inline'"],
+      styleSrc: ["'self'", "'unsafe-inline'"],
+      scriptSrc: ["'self'"],
       imgSrc: ["'self'", "data:", "https:"],
-      fontSrc: ["'self'", "https://cdnjs.cloudflare.com"]
-    }
-  }
+    },
+  },
 }));
-
-// CORS
-app.use(cors({
-  origin: process.env.FRONTEND_URL || '*',
-  credentials: true
-}));
-
-// Compressão
-app.use(compression());
 
 // Rate limiting
 const limiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 minutos
-  max: process.env.NODE_ENV === 'production' ? 100 : 1000, // limite de requests por IP
-  message: {
-    success: false,
-    message: 'Muitas tentativas. Tente novamente em 15 minutos.'
-  },
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 100, // limit each IP to 100 requests per windowMs
+  message: 'Too many requests from this IP, please try again later.',
   standardHeaders: true,
-  legacyHeaders: false
+  legacyHeaders: false,
 });
-
 app.use('/api/', limiter);
 
-// Rate limiting mais restritivo para login
-const authLimiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 minutos
-  max: 5, // máximo 5 tentativas de login por IP
-  message: {
-    success: false,
-    message: 'Muitas tentativas de login. Tente novamente em 15 minutos.'
-  },
-  skipSuccessfulRequests: true
-});
+// CORS configuration
+app.use(cors({
+  origin: process.env.NODE_ENV === 'production' 
+    ? ['https://your-domain.com'] 
+    : ['http://localhost:3000', 'http://localhost:3001'],
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
+  allowedHeaders: ['Content-Type', 'Authorization']
+}));
 
-app.use('/api/users/login', authLimiter);
+// Compression middleware
+app.use(compression());
 
-// Middlewares básicos
+// Body parsing middleware
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
-// Logging de requisições
-app.use(logger.logRequest);
+// HTTP request logging (morgan + winston)
+app.use(morgan('combined', {
+  stream: {
+    write: (message) => logger.http(message.trim()),
+  },
+}));
 
-// Servir arquivos estáticos
-app.use(express.static(path.join(__dirname, 'public')));
-
-// Testar conexão com banco na inicialização (opcional)
-(async () => {
-  try {
-    const connection = await pool.getConnection();
-    logger.info('Conectado ao MySQL com sucesso!');
-    connection.release();
-  } catch (err) {
-    logger.warn('Aviso: Não foi possível conectar ao banco de dados:', err.message);
-    logger.info('O servidor continuará rodando. Configure o MySQL e reinicie.');
-  }
-})();
-
-// Rota de health check
+// Health check endpoint
 app.get('/health', (req, res) => {
-  res.json({
-    success: true,
-    message: 'Elite Barber API está funcionando!',
+  res.status(200).json({
+    status: 'OK',
     timestamp: new Date().toISOString(),
-    version: process.env.npm_package_version || '1.0.0'
+    uptime: process.uptime(),
+    environment: process.env.NODE_ENV || 'development'
   });
 });
 
-// Rota raiz - servir o frontend
-app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, 'public', 'index.html'));
-});
+// Swagger docs
+setupSwagger(app);
 
-// Rota para página de teste de notificações
-app.get('/test-notifications', (req, res) => {
-  res.sendFile(path.join(__dirname, 'public', 'test-notifications.html'));
-});
-
-// Rota de teste simples (sem autenticação)
-app.get('/api/test', (req, res) => {
-  res.json({
-    success: true,
-    message: 'API funcionando sem autenticação',
-    timestamp: new Date().toISOString()
-  });
-});
-
-// API Routes
+// API routes
+app.use('/api/auth', authRoutes);
 app.use('/api/users', userRoutes);
+app.use('/api/barbers', barberRoutes);
 app.use('/api/appointments', appointmentRoutes);
 app.use('/api/services', serviceRoutes);
-app.use('/api/barbers', barberRoutes);
-app.use('/api/reviews', reviewRoutes);
-app.use('/api/notifications', require('./routes/notifications'));
+app.use('/api/notifications', notificationRoutes);
 
-// Rota para obter informações da API
-app.get('/api', (req, res) => {
-  res.json({
-    success: true,
-    message: 'Elite Barber API',
-    version: '1.0.0',
-    endpoints: {
-      users: '/api/users',
-      appointments: '/api/appointments',
-      services: '/api/services',
-      barbers: '/api/barbers',
-      reviews: '/api/reviews',
-      notifications: '/api/notifications'
-    },
-    documentation: '/api/docs'
+// Serve static files in production
+if (process.env.NODE_ENV === 'production') {
+  app.use(express.static('client/build'));
+  
+  app.get('*', (req, res) => {
+    res.sendFile(path.join(__dirname, 'client/build', 'index.html'));
+  });
+} else {
+  // Development mode - serve a simple message for root route
+  app.get('/', (req, res) => {
+    res.json({
+      success: true,
+      message: 'BarberShop API Server is running!',
+      environment: 'development',
+      frontend: 'Run `npm run client` to start React app on port 3001',
+      api: `API available at http://localhost:${PORT}/api`,
+      health: `Health check at http://localhost:${PORT}/health`
+    });
+  });
+}
+
+// 404 handler
+app.use('*', (req, res) => {
+  res.status(404).json({
+    success: false,
+    message: 'Route not found',
+    path: req.originalUrl
   });
 });
 
-// Middleware para rotas não encontradas
-app.use(notFound);
-
-// Middleware de tratamento de erros
+// Global error handler
 app.use(errorHandler);
 
-// Tratamento de erros não capturados
-process.on('unhandledRejection', (err, promise) => {
-  logger.error('Unhandled Promise Rejection:', err);
-  process.exit(1);
-});
-
-process.on('uncaughtException', (err) => {
-  logger.error('Uncaught Exception:', err);
-  process.exit(1);
-});
-
-// Graceful shutdown
-process.on('SIGTERM', async () => {
-  logger.info('SIGTERM recebido. Encerrando servidor...');
-  
+// Initialize services
+const initializeServices = async () => {
   try {
-    await pool.end();
-    logger.info('Conexões com banco encerradas.');
-    process.exit(0);
-  } catch (err) {
-    logger.error('Erro ao encerrar conexões:', err);
-    process.exit(1);
-  }
-});
+    // Initialize Email Service
+    if (process.env.NOTIFICATION_ENABLED === 'true') {
+      await EmailService.initialize();
+      logger.info('📧 Email Service initialized successfully');
+    }
 
-// Inicializar serviços
-async function initializeServices() {
-  try {
-    // Verificar se as configurações de email estão presentes
-    if (process.env.EMAIL_USER && process.env.EMAIL_PASSWORD) {
-      // Testar conexão com email
-      const emailService = require('./services/emailService');
-      await emailService.testConnection();
-      
-      // Iniciar scheduler de notificações
-      const schedulerService = require('./services/schedulerService');
-      schedulerService.start();
-      
-      logger.info('✅ Todos os serviços inicializados com sucesso');
-    } else {
-      logger.warn('⚠️ Configurações de email não encontradas. Sistema funcionará sem notificações.');
+    // Initialize Scheduler Service
+    if (process.env.SCHEDULER_ENABLED === 'true') {
+      await SchedulerService.initialize();
+      logger.info('⏰ Scheduler Service initialized successfully');
     }
   } catch (error) {
-    logger.warn('⚠️ Alguns serviços podem não estar funcionando:', error.message);
-    logger.info('💡 O sistema continuará funcionando sem notificações por email.');
+    logger.error('❌ Error initializing services:', error);
   }
-}
+};
 
-// Iniciar servidor
-const PORT = process.env.PORT || 3000;
-const server = app.listen(PORT, async () => {
-  logger.info(`🚀 Servidor Elite Barber rodando na porta ${PORT}`);
-  logger.info(`📱 Frontend: http://localhost:${PORT}`);
-  logger.info(`🔗 API: http://localhost:${PORT}/api`);
-  logger.info(`💚 Health Check: http://localhost:${PORT}/health`);
-  logger.info(`🌍 Ambiente: ${process.env.NODE_ENV || 'development'}`);
+// Start server
+app.listen(PORT, async () => {
+  logger.info(`🚀 BarberShop Elite API Server running on port ${PORT}`);
+  logger.info(`📊 Environment: ${process.env.NODE_ENV || 'development'}`);
+  logger.info(`🌐 Health check: http://localhost:${PORT}/health`);
+  logger.info(`🎯 Frontend URL: ${process.env.FRONTEND_URL}`);
   
-  // Inicializar serviços após o servidor estar rodando
+  // Initialize services after server starts
   await initializeServices();
 });
 
-// Timeout para requests
-server.timeout = 30000; // 30 segundos
+// Graceful shutdown
+process.on('SIGTERM', () => {
+  logger.info('SIGTERM received. Shutting down gracefully...');
+  process.exit(0);
+});
+
+process.on('SIGINT', () => {
+  logger.info('SIGINT received. Shutting down gracefully...');
+  process.exit(0);
+});
 
 module.exports = app;
