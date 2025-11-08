@@ -1,7 +1,7 @@
 {
-  "name": "barbershop-fullstack",
+  "name": "corte-digital",
   "version": "3.0.0",
-  "description": "Sistema completo de gerenciamento para barbearias - Backend Node.js + Frontend React",
+  "description": "Sistema completo de gerenciamento para barbearias - Backend Node.js + Frontend css",
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
@@ -38,7 +38,7 @@
   ],
   "author": {
     "name": "Leo Guesada",
-    "email": "leo@example.com"
+    "email": "leoguesada08@gmail.com"
   },
   "license": "MIT",
   "repository": {

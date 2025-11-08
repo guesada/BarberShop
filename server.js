@@ -6,23 +6,23 @@ const compression = require('compression');
 const path = require('path');
 require('dotenv').config();
 // Validate env vars
-require('./src/config/validateEnv')();
+require('./backend/config/validateEnv')();
 
-const authRoutes = require('./src/routes/authRoutes');
-const userRoutes = require('./src/routes/userRoutes');
-const barberRoutes = require('./src/routes/barberRoutes');
-const appointmentRoutes = require('./src/routes/appointmentRoutes');
-const serviceRoutes = require('./src/routes/serviceRoutes');
-const notificationRoutes = require('./src/routes/notificationRoutes');
+const authRoutes = require('./backend/routes/authRoutes');
+const userRoutes = require('./backend/routes/userRoutes');
+const barberRoutes = require('./backend/routes/barberRoutes');
+const appointmentRoutes = require('./backend/routes/appointmentRoutes');
+const serviceRoutes = require('./backend/routes/serviceRoutes');
+const notificationRoutes = require('./backend/routes/notificationRoutes');
 
-const { errorHandler } = require('./src/middleware/errorHandler');
-const logger = require('./src/utils/logger');
+const { errorHandler } = require('./backend/middleware/errorHandler');
+const logger = require('./backend/utils/logger');
 const morgan = require('morgan');
-const setupSwagger = require('./src/config/swagger');
+const setupSwagger = require('./backend/config/swagger');
 
 // Initialize services
-const EmailService = require('./src/services/EmailService');
-const SchedulerService = require('./src/services/SchedulerService');
+const EmailService = require('./backend/services/EmailService');
+const SchedulerService = require('./backend/services/SchedulerService');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -67,6 +67,9 @@ app.use(compression());
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
+// Serve static files from /public (site sem React)
+app.use(express.static(path.join(__dirname, 'public')));
+
 // HTTP request logging (morgan + winston)
 app.use(morgan('combined', {
   stream: {
@@ -95,26 +98,10 @@ app.use('/api/appointments', appointmentRoutes);
 app.use('/api/services', serviceRoutes);
 app.use('/api/notifications', notificationRoutes);
 
-// Serve static files in production
-if (process.env.NODE_ENV === 'production') {
-  app.use(express.static('client/build'));
-  
-  app.get('*', (req, res) => {
-    res.sendFile(path.join(__dirname, 'client/build', 'index.html'));
-  });
-} else {
-  // Development mode - serve a simple message for root route
-  app.get('/', (req, res) => {
-    res.json({
-      success: true,
-      message: 'BarberShop API Server is running!',
-      environment: 'development',
-      frontend: 'Run `npm run client` to start React app on port 3001',
-      api: `API available at http://localhost:${PORT}/api`,
-      health: `Health check at http://localhost:${PORT}/health`
-    });
-  });
-}
+// Root route should serve the static site (public/index.html)
+app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'index.html'));
+});
 
 // 404 handler
 app.use('*', (req, res) => {
